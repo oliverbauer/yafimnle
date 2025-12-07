@@ -1,0 +1,12 @@
+package io.github.yafimnle.transformation.video;
+
+import io.github.yafimnle.config.Config;
+import io.github.yafimnle.transformation.common.OutlineEntry;
+
+public class Scale extends OutlineEntry {
+    @Override
+    public String toString() {
+        String scaleFlags = Config.instance().ffmpeg().vid2vidscaleFlags();
+        return "scale="+ Config.instance().resolution().dimension()+scaleFlags;
+    }
+}
