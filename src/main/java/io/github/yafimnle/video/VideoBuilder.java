@@ -32,7 +32,7 @@ public class VideoBuilder extends Builder {
 
         // Configuration
         var configThreads = config.ffmpeg().threads();
-        var configQuiet = config.ffmpeg().builderLoglevel();
+        var loggingConfig = config.ffmpeg().loggingConfig();
         var framerate = config.ffmpeg().framerate();
         var filterAudio = config.ffmpeg().vid2vidaudioFilter();
         var targetResolution = config.resolution();
@@ -89,7 +89,7 @@ public class VideoBuilder extends Builder {
         var sb = new StringBuilder();
         sb.append(Config.instance().ffmpeg().command())
                 .append(" ")
-                .append(configQuiet)
+                .append(loggingConfig)
                 .append(" ")
                 .append(configThreads);
         if (from != null && to != null) {
@@ -143,7 +143,7 @@ public class VideoBuilder extends Builder {
         sb.append(codec);
         sb.append(" ");
 
-        sb.append(config.ffmpeg().videoCRF());
+        sb.append(config.ffmpeg().encoderOptions());
         if (transformation != null) {
             sb.append(" -map [v] -map [a]"); // TODO Map a
         }

@@ -101,7 +101,7 @@ public class OutlineV2 implements Transformation {
     public File fromImageToVideo(File input, File output, int seconds, String destinationDir) {
         int framerate = Config.instance().ffmpeg().framerate();
         String configThreads = Config.instance().ffmpeg().threads();
-        String configQuiet = Config.instance().ffmpeg().logevelIimageToVideo();
+        String loggingConfig = Config.instance().ffmpeg().loggingConfig();
         String codec = Config.instance().ffmpeg().codec();
 
         String filterComplex = "\""+toString();
@@ -116,7 +116,7 @@ public class OutlineV2 implements Transformation {
         //formatOutput = " "; // results in a command with one line
         String command = new StringBuilder()
                 .append(Config.instance().ffmpeg().command())
-                .append(" ").append(configQuiet).append(" ").append(configThreads)                                       // ffmpeg
+                .append(" ").append(loggingConfig).append(" ").append(configThreads)                                       // ffmpeg
                 .append(formatOutput).append("-loop 1 -framerate ").append(framerate).append(" -t ").append(seconds).append(" -i ").append(FileUtils.escapeWhitespaces(input)) // input image
 
                 // See: https://superuser.com/questions/1044988/merging-several-videos-with-audio-channel-and-without-audio
@@ -130,7 +130,7 @@ public class OutlineV2 implements Transformation {
                 .append(formatOutput).append(configThreads)// do not override if "output" already exists
                 .append(formatOutput).append("-r ").append(framerate)
                 .append(" -pix_fmt yuv420p ")
-                .append(Config.instance().ffmpeg().videoCRF())                                                  // video definition
+                .append(Config.instance().ffmpeg().encoderOptions())                                                  // video definition
                 .append(" ").append(FileUtils.escapeWhitespaces(output)).toString();                                                                        // result
 
         Instant start = Instant.now();
@@ -152,7 +152,7 @@ public class OutlineV2 implements Transformation {
     public File fromVideoToVideo(File input, File output, int seconds, String destinationDir) {
         var framerate = Config.instance().ffmpeg().framerate();
         var configThreads = Config.instance().ffmpeg().threads();
-        var configQuiet = Config.instance().ffmpeg().logevelIimageToVideo();
+        var configQuiet = Config.instance().ffmpeg().loggingConfig();
         var codec = Config.instance().ffmpeg().codec();
 
         var filterComplex = "\""+toString();
@@ -176,7 +176,7 @@ public class OutlineV2 implements Transformation {
                 .append(formatOutput).append(configThreads)// do not override if "output" already exists
                 .append(formatOutput).append("-r ").append(framerate)
                 .append(" -pix_fmt yuv420p ")
-                .append(Config.instance().ffmpeg().videoCRF())                                                  // video definition
+                .append(Config.instance().ffmpeg().encoderOptions())                                                  // video definition
                 .append(" ").append(FileUtils.escapeWhitespaces(output)).toString();                                                                        // result
 
         var start = Instant.now();

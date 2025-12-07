@@ -21,10 +21,8 @@ public class FFMpegConfig {
      * </pre>
      * Implementation will set loglevel for e.g. image to video converstion to ffmpeg_loglevel_image_to_video
      */
-    private String loglevel = "-loglevel quiet";
+    private String loggingConfig = "-loglevel quiet";
 
-    private String builderLoglevel = "-loglevel quiet";
-    private String logLevelVideoonly = "-loglevel quiet";
     /**
      * Appends flags while scaling an input video to an output video, if input video has a different dimension than
      * requested "Resolution" (this means it is used for upscale or downscale a video). It will not be applied if only
@@ -72,12 +70,21 @@ public class FFMpegConfig {
 
     private String vid2vidaudioFilter = "-filter:a loudnorm -b:a 192k -ac 2 -ar 44100";
 
-    // TODO use only one loglevel!
-    private String logevelIimageToVideo = "-loglevel quiet";
-    private String logevelAudioonlyVideoonly = "-loglevel quiet";
-    private String logevelMergeAudioonlyVideoonly = "-loglevel quiet";
-
-    private String videoCRF = "-crf 20";
+    /**
+     * <b>Default:</b> "-crf 20" (used by default codec "libx264")
+     * <p>
+     * FFMpeg use "-crf 23" as default for H.264 (see <a href="https://trac.ffmpeg.org/wiki/Encode/H.264">https://trac.ffmpeg.org/wiki/Encode/H.264</a>)
+     * (codec: libx264). Lower values means better quality but although larger videos.
+     * </p>
+     * <p>
+     * <b>Note</b>: This option is not supported on codecs like "h264_nvenc" and "hevc_nvenc". If you got a NVidia card and like to use
+     * hardware acceleration to you need to override this!
+     * </p>
+     * <p>
+     * Tested with GeForce RTX 2060 SUPER.
+     * </p>
+     */
+    private String encoderOptions = "-crf 20";
 
     private Integer framerate = 25;
 
@@ -112,9 +119,14 @@ public class FFMpegConfig {
      */
     private boolean forceSkipReencoding = false;
 
-
-
-    // or libx265 or hevc_nvenc    libx264 (h264_nvenc)
+    /**
+     * <p>
+     * <b>Default:</b> "libx264" for usage of H.264
+     * </p>
+     * <p>
+     * Note: encoderOptions needs to be adapted if codecs like h264_nvenc or hevc_nvenc are used!
+     * </p>
+     */
     private String codec = "libx264";
 
 
@@ -144,15 +156,11 @@ public class FFMpegConfig {
         return instance;
     }
 
-    public String loglevel() {
-        return instance.loglevel;
+    public String loggingConfig() {
+        return instance.loggingConfig;
     }
-    public FFMpegConfig loglevel(String loglevel) {
-        instance.loglevel = loglevel;
-        return instance;
-    }
-    public FFMpegConfig loglevelQuiet() {
-        instance.loglevel = "-loglevel quiet";
+    public FFMpegConfig loggingConfig(String loggingConfig) {
+        instance.loggingConfig = loggingConfig;
         return instance;
     }
 
@@ -164,22 +172,6 @@ public class FFMpegConfig {
         return instance.forceSkipReencoding;
     }
 
-
-    public String builderLoglevel() {
-        return instance.builderLoglevel;
-    }
-    public FFMpegConfig quiet() {
-        return instance;
-    }
-
-    public String logLevelVideoonly() {
-        return instance.logLevelVideoonly;
-    }
-    public FFMpegConfig ffmpegLogLevelVideoonlyQuiet() {
-        return instance;
-    }
-
-
     /**
      * -crf 20
      * or
@@ -189,8 +181,8 @@ public class FFMpegConfig {
      * @param crf
      * @return
      */
-    public FFMpegConfig videoCRF(String crf) {
-        instance.videoCRF = crf;
+    public FFMpegConfig encoderOptions(String crf) {
+        instance.encoderOptions = crf;
         return instance;
     }
 
@@ -227,20 +219,8 @@ public class FFMpegConfig {
         return instance.vid2vidaudioFilter;
     }
 
-    public String logevelIimageToVideo() {
-        return instance.logevelIimageToVideo;
-    }
-
-    public String logevelAudioonlyVideoonly() {
-        return instance.logevelAudioonlyVideoonly;
-    }
-
-    public String logevelMergeAudioonlyVideoonly() {
-        return instance.logevelMergeAudioonlyVideoonly;
-    }
-
-    public String videoCRF() {
-        return instance.videoCRF;
+    public String encoderOptions() {
+        return instance.encoderOptions;
     }
 
     public Integer framerate() {

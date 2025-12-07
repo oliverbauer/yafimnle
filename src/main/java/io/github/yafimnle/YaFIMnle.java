@@ -93,7 +93,7 @@ public class YaFIMnle {
             var videos = builders.size() - pictures;
             log.info("*********************************");
             log.info("* Creating video: {}, in directory {}", outputscript, destinationDir);
-            log.info("* Output quality: {}, CRF: {}", config.resolution().apprev(), config.ffmpeg().videoCRF());
+            log.info("* Output quality: {}, CRF: {}", config.resolution().apprev(), config.ffmpeg().encoderOptions());
             log.info("* Number of Inputs: {} ({} images, {} videos)", builders.size(), pictures, videos);
             log.info("*");
             log.info("* Config:");
@@ -143,7 +143,7 @@ public class YaFIMnle {
                     profile = "";
                 }
 
-                var addVideoEncOptions = "-c:v "+codec+" "+profile+" -pix_fmt yuv420p "+config.ffmpeg().videoCRF()+" -x264-params rc_lookahead=" + config.ffmpeg().vidEncH264RCLookahreadFor2160p() + ":threads=2:slices=0";
+                var addVideoEncOptions = "-c:v "+codec+" "+profile+" -pix_fmt yuv420p "+config.ffmpeg().encoderOptions()+" -x264-params rc_lookahead=" + config.ffmpeg().vidEncH264RCLookahreadFor2160p() + ":threads=2:slices=0";
                 // TODO r 25?
                 // TODO crf
                 videoonlyStringBuilder.append(" " + addVideoEncOptions + " -acodec aac -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
@@ -155,7 +155,7 @@ public class YaFIMnle {
                     profile = "";
                 }
 
-                var addVideoEncOptions = "-c:v "+codec+" "+profile+" -pix_fmt yuv420p " + config.ffmpeg().videoCRF() + " -x264-params rc_lookahead="+ config.ffmpeg().vidEncH264RCLookahreadFor1080p();
+                var addVideoEncOptions = "-c:v "+codec+" "+profile+" -pix_fmt yuv420p " + config.ffmpeg().encoderOptions() + " -x264-params rc_lookahead="+ config.ffmpeg().vidEncH264RCLookahreadFor1080p();
                 videoonlyStringBuilder.append(" " +addVideoEncOptions + " -acodec aac -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
             }
             case LOW_QUALITY -> {
@@ -212,7 +212,7 @@ public class YaFIMnle {
         if (new File(finalResult).exists()) {
             log.warn(Logs.red("File {} already exists.. will not be overwritten"), finalResult);
         } else {
-            CLI.exec(Config.instance().ffmpeg().command()+" " +config.ffmpeg().logevelMergeAudioonlyVideoonly() + " -i "+ videoInput + " -i " + audioInput + " -c copy -map 0:v -map 1:a -y " + finalResult, this);
+            CLI.exec(Config.instance().ffmpeg().command()+" " +config.ffmpeg().loggingConfig() + " -i "+ videoInput + " -i " + audioInput + " -c copy -map 0:v -map 1:a -y " + finalResult, this);
         }
         return new File(finalResult);
     }

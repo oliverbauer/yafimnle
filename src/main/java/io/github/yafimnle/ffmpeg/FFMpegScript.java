@@ -24,7 +24,7 @@ public abstract class FFMpegScript {
                 .append(" ")
                 .append(config.ffmpeg().threads())
                 .append(" ")
-                .append(config.ffmpeg().logevelAudioonlyVideoonly())
+                .append(config.ffmpeg().loggingConfig())
                 .append("\\")
                 .append("\n");
     }
