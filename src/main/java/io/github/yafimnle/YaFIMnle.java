@@ -3,6 +3,7 @@ package io.github.yafimnle;
 import io.github.yafimnle.common.Builder;
 import io.github.yafimnle.config.Config;
 import io.github.yafimnle.config.Resolution;
+import io.github.yafimnle.ffmpeg.FFMpegJoiner;
 import io.github.yafimnle.ffmpeg.FFMpegScriptAudio;
 import io.github.yafimnle.ffmpeg.FFMpegScriptVideo;
 import io.github.yafimnle.image.ImageBuilder;
@@ -82,6 +83,33 @@ public class YaFIMnle {
         }
     }
 
+    /**
+     * This method only joins results of builders, there is not re-encoding no "Fade" or no change in quality settings
+     * possible.
+     *
+     * But this is amazingly fast. :-)
+     *
+     * @return
+     */
+    public File createJoin() {
+        List<File> files = new ArrayList<>();
+        for (Builder builder : builders) {
+            File file = builder.create();
+            files.add(file);
+        }
+
+        FFMpegJoiner joiner = new FFMpegJoiner();
+        return joiner.join(outputscript, files);
+    }
+
+    /**
+     * Creates a new video accordingly to all defined builders.
+     * Note: After each builder has created its result, all videos will be together re-encoded.
+     * This allows things like "Fade" of the builder-results or using the final result with an other crf (if h264 is your codec)
+     * as using in builders, e.g. very high quality in builder (crf 20) and final video in crf 23.
+     *
+     * @return
+     */
     public File create() {
         String codec = Config.instance().ffmpeg().codec();
 
@@ -100,7 +128,7 @@ public class YaFIMnle {
             log.info("* - fade between composition[s]:           {}", config.ffmpeg().fadelength());
             log.info("* - img->vid seconds:                      {}", config.ffmpeg().imgToVidSeconds());
             log.info("* - *  ->vid codec:                        {}", config.ffmpeg().codec());
-            log.info("* - *  ->vid framerate:                    {}", config.ffmpeg().framerate());
+            log.info("* - *  ->vid frame rate:                   {}", config.ffmpeg().framerate());
             log.info("* - vid->vid scale-flags:                  {}", config.ffmpeg().vid2vidscaleFlags());
 
             log.info("* - threads:                               {}", config.ffmpeg().threads());
@@ -114,7 +142,7 @@ public class YaFIMnle {
         invokeBuilder(); // creates intermediate files
 
 
-        // TODO Recheck if separation of audioonly/videoonly is still neccessary... new approach merges only videos with audio
+        // TODO Recheck if separation of audioonly/videoonly is still necessary... new approach merges only videos with audio
 
         // AUDIO
         var audioonlyStringBuilder = ffMpegScriptAudio.stringBuilder();
@@ -128,7 +156,7 @@ public class YaFIMnle {
         ffMpegScriptVideo.appendInputs(builders);
         var ende = ffMpegScriptVideo.fullLength();
         videoonlyStringBuilder.append("  -filter_complex \"\\").append("\n");
-        log.debug("Videolength: {}", ende);
+        log.debug("Video length: {}", ende);
         ffMpegScriptVideo.fade(builders);
 
         var mp4Output = destinationDir + "/" + outputscript + "-videoonly-" + config.resolution().apprev() + ".mp4";
@@ -137,9 +165,9 @@ public class YaFIMnle {
                 /*
                  * rc_lookahead=0 reduces memory significantly!
                  */
-                // TODO -profile:v high scheint bei hevc_nvenc nicht erlaubt zu sein
+                // "-profile:v high" not allowed by hevc_nvenc
                 var profile = "-profile:v high";
-                if (codec.equals("hevc_nvenc")) {
+                if (codec.contains("nvenc")) {
                     profile = "";
                 }
 
@@ -149,9 +177,9 @@ public class YaFIMnle {
                 videoonlyStringBuilder.append(" " + addVideoEncOptions + " -acodec aac -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
             }
             case FULL_HD -> {
-                // TODO -profile:v high scheint bei hevc_nvenc nicht erlaubt zu sein
+                // "-profile:v high" not allowed by hevc_nvenc
                 var profile = "-profile:v high";
-                if (codec.equals("hevc_nvenc")) {
+                if (codec.contains("nvenc")) {
                     profile = "";
                 }
 
@@ -159,7 +187,12 @@ public class YaFIMnle {
                 videoonlyStringBuilder.append(" " +addVideoEncOptions + " -acodec aac -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
             }
             case LOW_QUALITY -> {
-                videoonlyStringBuilder.append(" -c:v "+codec+" -preset veryfast -pix_fmt yuv420p -acodec aac -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
+                var preset = "-preset veryfast";
+                if (codec.contains("nvenc")) {
+                    preset = "";
+                }
+
+                videoonlyStringBuilder.append(" -c:v "+codec+" "+preset+" -pix_fmt yuv420p -acodec aac -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
             }
         }
         videoonlyStringBuilder.append("end=$(date)").append("\n");
@@ -187,6 +220,7 @@ public class YaFIMnle {
             CLI.exec("cp " + name + " " + destinationDir+"/"+FileUtils.escapeWhitespaces(overlayMp3.getParentFile()), this);
             log.info("Generate audio-overlay-File...");
             // TODO ? -filter:a loudnorm
+            // TODO fade-duration should be configurable
             CLI.exec("ffmpeg -ss 0 -to " + ende + " -i " + destinationDir + "/" + name + " -af \"afade=t=in:st=0:duration=5,afade=t=out:st=" + (ende - 5) + ":duration=5,volume=0.5\" -b:a 192k -ar 44100 -ac 2 -y " + destinationDir + "/" + name + "-cutted.mp3", this);
             CLI.exec("ffmpeg -i " + destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + ".aac -i " + destinationDir + "/" + name + "-cutted.mp3 -filter_complex amix=inputs=2:duration=first:dropout_transition=3 -b:a 192k -ar 44100 -ac 2 -y " + destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + "-overlay.aac", this);
         }

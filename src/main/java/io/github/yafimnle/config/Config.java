@@ -36,6 +36,18 @@ public class Config {
         return instance;
     }
 
+    public static Config freshInstance(boolean withHardwareAcceleration) {
+        instance = new Config();
+        if (withHardwareAcceleration) {
+            instance.ffmpeg(FFMpegConfig.ffmpeg()
+                    .command("ffmpeg -hwaccel cuda")
+                    .codec("h264_nvenc")
+                    .encoderOptions("-rc vbr -cq 30")
+            );
+        }
+        return instance;
+    }
+
 
     public Config destinationDir(String destinationDir) {
         instance.destinationDir = destinationDir;

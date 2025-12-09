@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.File;
 
+import static io.github.yafimnle.TestConstants.useHardwareAcceleration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -19,7 +20,7 @@ class ExtendFlipFlopEqualTest {
 
     @BeforeEach
     void freshConfig() {
-        Config.freshInstance();
+        Config.freshInstance(useHardwareAcceleration);
     }
 
     @ParameterizedTest

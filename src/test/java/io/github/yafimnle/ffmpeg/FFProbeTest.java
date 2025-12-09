@@ -8,12 +8,13 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static io.github.yafimnle.TestConstants.useHardwareAcceleration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FFProbeTest {
     @BeforeEach
     void freshConfig() {
-        Config.freshInstance();
+        Config.freshInstance(useHardwareAcceleration);
     }
 
     @Test

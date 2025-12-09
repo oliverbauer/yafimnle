@@ -13,6 +13,13 @@ public class Transformations {
 
     }
 
+    public static OutlineV2 videoTransformationNone() {
+        return OutlineV2.of(
+                true,
+                new Scale() // TODO configurable lancoz
+        );
+    }
+
     // TODO Rename to text2->header1, text2->header2, text->header3 same for others
     public static OutlineV2 videoTransformation(String text, String text1, String text2) {
         int boxHeight = 192;
@@ -98,6 +105,12 @@ public class Transformations {
 
     public static OutlineV2 zoomOut(String text, String text2, String text3) {
         return imageTransformation(text, text2, text3, "'if(lte(zoom,1.0),1.2,max(1.001,zoom-0.001))'");
+    }
+
+    public static OutlineV2 imageTransformationNone() {
+        return OutlineV2.of(
+                false
+        );
     }
 
     public static OutlineV2 imageTransformation(String text, String text1, String text2, String zoom) {

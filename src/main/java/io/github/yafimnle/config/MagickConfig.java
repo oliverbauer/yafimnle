@@ -10,9 +10,9 @@ public class MagickConfig {
 
     // Source: https://imagemagick.org/archive/binaries/magick On my Ubuntu it is "convert" by default installtion, but it is an old version
     // TODO this shouldn't be default!
-    private String command = "/home/oliver/ffmpeg-video-gen/yafimnle-binaries/magick-7.1.1-43-Q16-HDRI-x86_64";
+    private String command = "/home/oliver/imagemagick-source/ImageMagick/utilities/magick";
     private String threads = "-limit thread 1";
-    private AbstractAROptions defaultImageAspectRatio = AR.crop(Gravity.CENTER);
+    private AbstractAROptions defaultImageAspectRatio = AR.crop(Gravity.CENTER, false);
 
     // Konstructor
     private MagickConfig() {
@@ -42,6 +42,11 @@ public class MagickConfig {
 
     public MagickConfig threads(int num) {
         instance.threads = "-limit thread "+num;
+        return instance;
+    }
+
+    public MagickConfig defaultImageAspectRatio(AbstractAROptions ar) {
+        instance.defaultImageAspectRatio = ar;
         return instance;
     }
 

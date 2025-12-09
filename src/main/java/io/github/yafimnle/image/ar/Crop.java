@@ -8,9 +8,15 @@ import java.io.File;
 
 public class Crop implements AbstractAROptions {
     private final Gravity gravity;
+    private final boolean enforceCorrectResolution;
 
     public Crop(Gravity gravity) {
+        this(gravity, false);
+    }
+
+    public Crop(Gravity gravity, boolean enforceCorrectResolution) {
         this.gravity = gravity;
+        this.enforceCorrectResolution = enforceCorrectResolution;
     }
 
     @Override
@@ -23,8 +29,11 @@ public class Crop implements AbstractAROptions {
         String cmd = config.magick().command();
         String threads = config.magick().threads();
         String ar = config.resolution().ar();
+        String dim = config.resolution().dimension();
         String grav = gravity.toString();
-
-        return String.format("%s %s %s -gravity %s -crop %s -quality 100 %s", cmd, threads, input, grav, ar, output);
+        if (!enforceCorrectResolution)
+            return String.format("%s %s %s -gravity %s -crop %s -quality 100 %s", cmd, threads, input, grav, ar, output);
+        else
+            return String.format("%s %s %s -gravity %s -crop %s -resize %s -quality 100 %s", cmd, threads, input, grav, ar, dim, output);
     }
 }

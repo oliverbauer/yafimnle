@@ -40,15 +40,12 @@ tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
-/*
- * 0.5.14 Bugfix in FFMpegScriptVideo - ein 5 Sekunden Video wird teilweise mit "4.980000" angezeigt.
- */
 publishing {
     publications {
         maven(MavenPublication) {
             groupId = 'io.github.yafimnle'
             artifactId = 'yafimnle-core'
-            version = '0.6.12'
+            version = '0.6.13'
 
             from components.java
         }

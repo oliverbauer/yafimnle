@@ -16,6 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.io.File;
 import java.util.stream.Stream;
 
+import static io.github.yafimnle.TestConstants.useHardwareAcceleration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -24,7 +25,7 @@ class ImageCropperTest {
 
     @BeforeEach
     void freshConfig() {
-        Config.freshInstance()
+        Config.freshInstance(useHardwareAcceleration)
                 .destinationDir("/tmp/");
     }
 

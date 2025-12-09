@@ -12,13 +12,14 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static io.github.yafimnle.TestConstants.useHardwareAcceleration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class YaFIMnleTest {
     @BeforeEach
     void freshConfig() {
         Config
-                .freshInstance()
+                .freshInstance(useHardwareAcceleration)
                 .sourceDir(new File(getClass().getClassLoader().getResource("2160x1620_4to3.jpg").getFile()).getParentFile().getAbsolutePath())
                 .resolution(Resolution.LOW_QUALITY);
     }

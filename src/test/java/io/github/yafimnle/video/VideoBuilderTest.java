@@ -9,13 +9,14 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
+import static io.github.yafimnle.TestConstants.useHardwareAcceleration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // TODO Add a fucking mts file since it fails in NationalparkKrka
 class VideoBuilderTest {
     @BeforeEach
     void freshConfig() {
-        Config.freshInstance().resolution(Resolution.LOW_QUALITY);
+        Config.freshInstance(useHardwareAcceleration).resolution(Resolution.LOW_QUALITY);
     }
 
     @Test

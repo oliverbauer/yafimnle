@@ -11,22 +11,23 @@ import java.io.File;
 import java.time.Instant;
 
 /**
- * Transforms an image to a video in correct resolution. The video will contain "silent" audio which is necessary
- * for joining many final videos.
+ * Difference to None:
  *
- * If your image has already correct size use FastNone which is faster.
+ * No scale:
+ *
+ * ffmpeg -threads 1 \
+ * 	 -loop 1 -framerate 25 -t 5 -i /tmp/input_2.jpg -f lavfi -i anullsrc  \
+ * 	 -acodec aac -vcodec h264 -t 5 \
+ * 	 -y -crf 23 /tmp/16_13_56.nef-1080p.mp4
  */
 @Log4j2
-public class None implements Transformation {
+public class FastNone implements Transformation {
     @Override
     public File fromImageToVideo(File input, File output, int seconds, String destinationDir) {
         var framerate = Config.instance().ffmpeg().framerate();
-        var dimension = Config.instance().resolution().dimension();
         var configThreads = Config.instance().ffmpeg().threads();
         var loglevel = Config.instance().ffmpeg().loggingConfig();
         var codec = Config.instance().ffmpeg().codec();
-
-        var filterComplex = "\"[0:v]scale=" + dimension + "[v];[1:a]atrim=0:5[a]\"";
 
         if (!output.getName().endsWith("mp4")) {
             String current = output.toString();
@@ -41,8 +42,7 @@ public class None implements Transformation {
                 .append(" ").append(loglevel).append(" ").append(configThreads)                                       // ffmpeg
                 .append(formatOutput).append("-loop 1 -framerate ").append(framerate).append(" -t ").append(seconds).append(" -i ").append(FileUtils.escapeWhitespaces(input)) // input image
                 .append(" -f lavfi -i anullsrc ")
-                .append(formatOutput).append("-filter_complex ").append(filterComplex)                                                             // see above: zoom-in
-                .append(formatOutput).append("-acodec aac -vcodec ").append(codec).append(" -map [v] -map [a] -t ").append(seconds)                // audio and video definition
+                .append(formatOutput).append("-acodec aac -vcodec ").append(codec).append(" -t ").append(seconds)                // audio and video definition
                 .append(formatOutput).append("-y ")                                                                                                // do not override if "output" already exists
                 .append(" -pix_fmt yuv420p ")
                 .append(Config.instance().ffmpeg().encoderOptions())                                                  // video definition

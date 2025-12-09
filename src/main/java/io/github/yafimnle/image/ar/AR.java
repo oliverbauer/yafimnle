@@ -10,9 +10,14 @@ public class AR {
 
     // CROP -> Rempve pixels, result will match aspect ratio (16:9)
 
+    public static Crop crop(Gravity gravity, boolean enforceCorrectResultion) {
+        return new Crop(gravity, enforceCorrectResultion);
+    }
+
     public static Crop crop(Gravity gravity) {
         return new Crop(gravity);
     }
+
     public static CropResolution cropResolution(Gravity gravity) {
         return new CropResolution(gravity);
     }

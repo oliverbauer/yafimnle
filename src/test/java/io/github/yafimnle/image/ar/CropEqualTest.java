@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.io.File;
 import java.util.List;
 
+import static io.github.yafimnle.TestConstants.useHardwareAcceleration;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CropEqualTest {
@@ -18,7 +19,7 @@ class CropEqualTest {
 
     @BeforeEach
     void freshConfig() {
-        Config.freshInstance();
+        Config.freshInstance(useHardwareAcceleration);
     }
 
     @ParameterizedTest
