@@ -23,6 +23,13 @@ public class OutlineV2 implements Transformation {
         outlineEntries = new ArrayList<>();
     }
 
+    public static OutlineV2 of(boolean isVideo, List<OutlineEntry> outlineEntry) {
+        OutlineV2 outlineV2 = new OutlineV2();
+        outlineV2.isVideo = isVideo;
+        outlineV2.outlineEntries.addAll(outlineEntry);
+        return outlineV2;
+    }
+
     public static OutlineV2 of(boolean isVideo, OutlineEntry... outlineEntry) {
         OutlineV2 outlineV2 = new OutlineV2();
         outlineV2.isVideo = isVideo;
@@ -36,8 +43,10 @@ public class OutlineV2 implements Transformation {
             StringBuilder s = new StringBuilder();
             s.append("  [0:v]").append(outlineEntries.get(0));
             s.append("\n");
-            s.append("[v]\"\\");
+            s.append("[v];");
+            s.append("[0:a]loudnorm,afade=type=in:duration=1:start_time=0[a]\"\\"); // TODO normize?
             s.append("\n");
+
             return s.toString();
         } else {
             StringBuilder s = new StringBuilder();
@@ -118,14 +127,10 @@ public class OutlineV2 implements Transformation {
                 .append(Config.instance().ffmpeg().command())
                 .append(" ").append(loggingConfig).append(" ").append(configThreads)                                       // ffmpeg
                 .append(formatOutput).append("-loop 1 -framerate ").append(framerate).append(" -t ").append(seconds).append(" -i ").append(FileUtils.escapeWhitespaces(input)) // input image
-
                 // See: https://superuser.com/questions/1044988/merging-several-videos-with-audio-channel-and-without-audio
-                .append(" -f lavfi -i anullsrc ")
-
-                //.append(formatOutput).append(" ").append(" -t ").append(seconds).append(" -i ").append(FileUtils.escapeWhitespaces(input)) // input video
+                .append(" -f lavfi -i anullsrc -c:a aac ")
                 .append(formatOutput).append("-filter_complex ").append(filterComplex)                                                             // see above: zoom-in
-                //.append(formatOutput).append("-acodec aac -vcodec codec -map [v] -t ").append(seconds)                                  // audio and video definition
-                .append(formatOutput).append("-acodec aac -vcodec ").append(codec).append(" -map [v] -map 0:a? -map 1:a -t ").append(seconds)                                  // audio and video definition
+                .append(formatOutput).append("-b:a 192k -ac 2 -ar 44100 -vcodec ").append(codec).append(" -map [v] -map 0:a? -map 1:a -t ").append(seconds)                                  // audio and video definition
                 .append(formatOutput).append("-y ")
                 .append(formatOutput).append(configThreads)// do not override if "output" already exists
                 .append(formatOutput).append("-r ").append(framerate)
@@ -171,7 +176,7 @@ public class OutlineV2 implements Transformation {
                 //.append(formatOutput).append("-loop 1 -framerate ").append(framerate).append(" -t ").append(seconds).append(" -i ").append(FileUtils.escapeWhitespaces(input)) // input image
                 .append(formatOutput).append(" ").append(" -t ").append(seconds).append(" -i ").append(FileUtils.escapeWhitespaces(input)) // input video
                 .append(formatOutput).append("-filter_complex ").append(filterComplex)                                                             // see above: zoom-in
-                .append(formatOutput).append("-acodec aac -vcodec ").append(codec).append(" -map [v] -t ").append(seconds)                                  // audio and video definition
+                .append(formatOutput).append("-acodec aac -b:a 192k -ac 2 -ar 44100 -vcodec ").append(codec).append(" -map [v] -t ").append(seconds)                                  // audio and video definition
                 .append(formatOutput).append("-y ")
                 .append(formatOutput).append(configThreads)// do not override if "output" already exists
                 .append(formatOutput).append("-r ").append(framerate)

@@ -5,6 +5,8 @@ public class Config {
 
     private FFMpegConfig ffMpegConfig = null;
     private MagickConfig magickConfig = null;
+    private TransformConfig transformConfig = null;
+
     /**
      * Defines weather the final output is Ultra-HD (4k, 2160p, 16:9, 3840x2160) or Full-HD (1080p, 16:9, 1920x1080).
      * <pre>
@@ -39,7 +41,8 @@ public class Config {
     public static Config freshInstance(boolean withHardwareAcceleration) {
         instance = new Config();
         if (withHardwareAcceleration) {
-            instance.ffmpeg(FFMpegConfig.ffmpeg()
+            instance.resolution(Resolution.FULL_HD)
+                    .ffmpeg(FFMpegConfig.ffmpeg()
                     .command("ffmpeg -hwaccel cuda")
                     .codec("h264_nvenc")
                     .encoderOptions("-rc vbr -cq 30")
@@ -95,6 +98,20 @@ public class Config {
         instance.magickConfig = config;
         return instance;
     }
+
+    public TransformConfig transformConfig() {
+        if (transformConfig == null) {
+            instance.transformConfig = TransformConfig.transformConfig();
+        }
+        return instance.transformConfig;
+    }
+
+    public Config transformConfig(TransformConfig transformConfig) {
+        instance.transformConfig = transformConfig;
+        return instance();
+    }
+
+
 
     public Config sourceDir(String sourceDir) {
         instance.sourceDir = sourceDir;

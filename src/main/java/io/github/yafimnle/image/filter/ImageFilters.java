@@ -30,6 +30,15 @@ public class ImageFilters {
         return new Implode(x, y, with, height, factor);
     }
 
+    // TODO add
+    // ~/Downloads/upscayl-2.25.0-linux/resources/bin$ ./upscayl-bin -i input.jpg -s 2 -m /home/oliver/Downloads/upscayl-2.25.0-linux/resources/models -n remacri-4x   -o output.jpg
+    // ultrasharp-4x
+    //
+
+    public static Waifu2xUpscale waifu2xUpscale() {
+        return new Waifu2xUpscale();
+    }
+
     public static Paint paint(int x, int y, int with, int height, int factor) {
         // 50x75+965+875
         // xsize:ysize+xpos+xpos

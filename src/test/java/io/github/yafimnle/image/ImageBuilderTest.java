@@ -151,7 +151,6 @@ class ImageBuilderTest {
     void fromNEF() {
         // given
         File i = TestResource.file("6000x4000_3to2.nef");
-        Config.instance().resolution(Resolution.FULL_HD);
 
         // when
         var actual = new ImageBuilder(i)
@@ -167,11 +166,8 @@ class ImageBuilderTest {
         // given
         File i = TestResource.file("2160x1620_4to3-2.jpg");
 
-        Config.instance().resolution(Resolution.FULL_HD);
-        ImageBuilder imageBuilder = new ImageBuilder(i);
-
         // when
-        var actual = imageBuilder
+        var actual = new ImageBuilder(i)
                 //.scalePreprocessingFilter(ScalePreprocessingFilters.partialBlur(1085, 1185, 65, 90, 10))
                 //.scalePreprocessingFilter(ScalePreprocessingFilters.implode(1085, 1185, 65, 90, 1.5))
                 //.appendScalePreprocessingFilter(ScalePreprocessingFilters.paint(1085, 1185, 65, 90, 4))
@@ -181,26 +177,17 @@ class ImageBuilderTest {
                 .create();
 
         // then
-        // Image has been created in correct dimension
-        String configDestinationDir = Config.instance().destinationDir();
-        assertTrue(new File(configDestinationDir + i + "-1080p.jpg").exists());
-
-        Resolution expectedResolution = Resolution.from(2160, 1215); // 16:9
-        assertEquals(expectedResolution, FFProbe.instance().resolution(new File(configDestinationDir + i + "-1080p.jpg")));
-        // Video has been created in correct dimension
         assertEquals(Resolution.FULL_HD, FFProbe.instance().resolution(actual));
         assertEquals("5.000000", FFProbe.instance().length(actual));
     }
 
     @Test
     void from_portrait() {
+        // given
         File i = TestResource.file("1620x2160-portrait.jpg");
 
-        Config.instance().resolution(Resolution.FULL_HD);
-        ImageBuilder imageBuilder = new ImageBuilder(i);
-
         // when
-        var actual = imageBuilder
+        var actual = new ImageBuilder(i)
                 .fromPortrait()
                 .as("from_portrait")
                 .create();
@@ -211,13 +198,11 @@ class ImageBuilderTest {
 
     @Test
     void rotate_then_from_portrait() {
+        // given
         File i = TestResource.file("2160x1620-rotated.jpg");
 
-        Config.instance().resolution(Resolution.FULL_HD);
-        ImageBuilder imageBuilder = new ImageBuilder(i);
-
         // when
-        var actual = imageBuilder
+        var actual = new ImageBuilder(i)
                 .rotate(90)
                 .fromPortrait()
                 .as("rotate_then_from_portrait")

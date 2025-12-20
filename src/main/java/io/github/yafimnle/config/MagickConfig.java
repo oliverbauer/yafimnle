@@ -3,6 +3,11 @@ package io.github.yafimnle.config;
 import io.github.yafimnle.image.ar.AR;
 import io.github.yafimnle.image.ar.AbstractAROptions;
 import io.github.yafimnle.image.enums.Gravity;
+import io.github.yafimnle.image.filter.imagefilter.ImageFilter;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 // Note: Do not use lombok here in this class unless change from instance to "this"
 public class MagickConfig {
@@ -13,6 +18,11 @@ public class MagickConfig {
     private String command = "/home/oliver/imagemagick-source/ImageMagick/utilities/magick";
     private String threads = "-limit thread 1";
     private AbstractAROptions defaultImageAspectRatio = AR.crop(Gravity.CENTER, false);
+
+    /**
+     * For example: You could append ImagesFilters.waifu2xUpscale
+     */
+    private List<ImageFilter> preprocessFilters = new ArrayList<>();
 
     // Konstructor
     private MagickConfig() {
@@ -52,5 +62,14 @@ public class MagickConfig {
 
     public AbstractAROptions defaultImageAspectRatio() {
         return instance.defaultImageAspectRatio;
+    }
+
+    public MagickConfig appendPreprocessFilter(ImageFilter imageFilter) {
+        instance.preprocessFilters.add(imageFilter);
+        return instance;
+    }
+
+    public List<ImageFilter> preprocessFilters() {
+        return preprocessFilters;
     }
 }

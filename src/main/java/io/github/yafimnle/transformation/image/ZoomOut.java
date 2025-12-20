@@ -37,9 +37,9 @@ public class ZoomOut implements Transformation {
                 .append(Config.instance().ffmpeg().command())
                 .append(" ").append(loggingConfig).append(" ").append(configThreads)                                       // ffmpeg
                 .append(formatOutput).append("-loop 1 -framerate ").append(framerate).append(" -t ").append(seconds).append(" -i ").append(FileUtils.escapeWhitespaces(input)) // input image
-                .append(" -f lavfi -i anullsrc ")
+                .append(" -f lavfi -i anullsrc -c:a aac ")
                 .append(formatOutput).append("-filter_complex ").append(filterComplex)                                                             // see above: zoom-in
-                .append(formatOutput).append("-acodec aac -vcodec ").append(codec).append(" -map [v] -map [a] -t ").append(seconds)                // audio and video definition
+                .append(formatOutput).append("-b:a 192k -ac 2 -ar 44100 -vcodec ").append(codec).append(" -map [v] -map [a] -t ").append(seconds)                // audio and video definition
                 .append(formatOutput).append("-y ")                                                                                                // do not override if "output" already exists
                 .append(" -pix_fmt yuv420p ")
                 .append(Config.instance().ffmpeg().encoderOptions())                                                  // video definition

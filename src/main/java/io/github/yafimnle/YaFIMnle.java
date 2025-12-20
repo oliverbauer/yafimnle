@@ -7,6 +7,8 @@ import io.github.yafimnle.ffmpeg.FFMpegJoiner;
 import io.github.yafimnle.ffmpeg.FFMpegScriptAudio;
 import io.github.yafimnle.ffmpeg.FFMpegScriptVideo;
 import io.github.yafimnle.image.ImageBuilder;
+import io.github.yafimnle.image.filter.Transformations;
+import io.github.yafimnle.transformation.Transformation;
 import io.github.yafimnle.utils.CLI;
 import io.github.yafimnle.utils.FileUtils;
 import io.github.yafimnle.utils.Logs;
@@ -52,12 +54,42 @@ public class YaFIMnle {
 
     public static ImageBuilder img(String name) {
         var sourcePath = Config.instance().sourceDir();
-        return new ImageBuilder(new File(sourcePath+"/"+name));
+        var overrideImageTransformation = Config.instance().transformConfig().overrideImageTransformation();
+        if (overrideImageTransformation == null) {
+            return new ImageBuilder(new File(sourcePath + "/" + name));
+        } else {
+            return new ImageBuilder(new File(sourcePath + "/" + name)).transform(overrideImageTransformation);
+        }
+    }
+
+    public static ImageBuilder img(String name, Transformation transformations) {
+        var sourcePath = Config.instance().sourceDir();
+        var overrideImageTransformation = Config.instance().transformConfig().overrideImageTransformation();
+        if (overrideImageTransformation == null) {
+            return new ImageBuilder(new File(sourcePath + "/" + name)).transform(transformations);
+        } else {
+            return new ImageBuilder(new File(sourcePath + "/" + name)).transform(overrideImageTransformation);
+        }
     }
 
     public static VideoBuilder vid(String name) {
         var sourcePath = Config.instance().sourceDir();
-        return new VideoBuilder(new File(sourcePath+"/"+name));
+        var overrideVideoTransformation = Config.instance().transformConfig().overrideVideoTransformation();
+        if (overrideVideoTransformation == null) {
+            return new VideoBuilder(new File(sourcePath + "/" + name));
+        } else {
+            return new VideoBuilder(new File(sourcePath + "/" + name)).transform(overrideVideoTransformation);
+        }
+    }
+
+    public static VideoBuilder vid(String name, Transformation transformations) {
+        var sourcePath = Config.instance().sourceDir();
+        var overrideVideoTransformation = Config.instance().transformConfig().overrideVideoTransformation();
+        if (overrideVideoTransformation == null) {
+            return new VideoBuilder(new File(sourcePath + "/" + name)).transform(transformations);
+        } else {
+            return new VideoBuilder(new File(sourcePath + "/" + name)).transform(overrideVideoTransformation);
+        }
     }
 
     public YaFIMnle of(List<Builder> builder) {
@@ -171,20 +203,23 @@ public class YaFIMnle {
                     profile = "";
                 }
 
-                var addVideoEncOptions = "-c:v "+codec+" "+profile+" -pix_fmt yuv420p "+config.ffmpeg().encoderOptions()+" -x264-params rc_lookahead=" + config.ffmpeg().vidEncH264RCLookahreadFor2160p() + ":threads=2:slices=0";
+                var addVideoEncOptions = "-c:v "+codec+" "+profile+" -pix_fmt yuv420p "+config.ffmpeg().encoderOptions()+" " + config.ffmpeg().vidEncH264RCLookahreadFor2160p();
                 // TODO r 25?
                 // TODO crf
-                videoonlyStringBuilder.append(" " + addVideoEncOptions + " -acodec aac -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
+                videoonlyStringBuilder.append(" " + addVideoEncOptions + " -acodec aac -b:a 192k -ac 2 -ar 44100 -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
             }
             case FULL_HD -> {
                 // "-profile:v high" not allowed by hevc_nvenc
-                var profile = "-profile:v high";
+                var profile = "-profile:v high  -preset slow";
                 if (codec.contains("nvenc")) {
                     profile = "";
                 }
+                if (codec.equals("libx265")) {
+                    profile = "-preset slow";
+                }
 
-                var addVideoEncOptions = "-c:v "+codec+" "+profile+" -pix_fmt yuv420p " + config.ffmpeg().encoderOptions() + " -x264-params rc_lookahead="+ config.ffmpeg().vidEncH264RCLookahreadFor1080p();
-                videoonlyStringBuilder.append(" " +addVideoEncOptions + " -acodec aac -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
+                var addVideoEncOptions = "-c:v "+codec+" "+profile+" -pix_fmt yuv420p " + config.ffmpeg().encoderOptions() + " "+ config.ffmpeg().vidEncH264RCLookahreadFor2160p();
+                videoonlyStringBuilder.append(" " +addVideoEncOptions + " -acodec aac -b:a 192k -ac 2 -ar 44100 -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
             }
             case LOW_QUALITY -> {
                 var preset = "-preset veryfast";
@@ -192,7 +227,7 @@ public class YaFIMnle {
                     preset = "";
                 }
 
-                videoonlyStringBuilder.append(" -c:v "+codec+" "+preset+" -pix_fmt yuv420p -acodec aac -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
+                videoonlyStringBuilder.append(" -c:v "+codec+" "+preset+" -pix_fmt yuv420p -acodec aac -b:a 192k -ac 2 -ar 44100 -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
             }
         }
         videoonlyStringBuilder.append("end=$(date)").append("\n");

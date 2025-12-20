@@ -30,6 +30,10 @@ public class VideoBuilder extends Builder {
     public File create() {
         var config = Config.instance();
 
+        // TODO consider a "Preprocessing chain" like in ImageBuilder. This enables the possibility to use vidstabdetect + vidstabtransform
+        // ffmpeg -i input.mp4 -vf vidstabdetect -f null -
+        // ffmpeg -i input.mp4 -vf vidstabtransform output.mp4
+
         // Configuration
         var configThreads = config.ffmpeg().threads();
         var loggingConfig = config.ffmpeg().loggingConfig();
@@ -117,8 +121,6 @@ public class VideoBuilder extends Builder {
                 sb.append(targetResolution.dimension());
                 sb.append(config.ffmpeg().vid2vidscaleFlags()); //  TODO scale denoise video->video
                 log.debug("Source dimension {} does not equals requested dimension {}, adding option '-vf scale=wxh' on next command (scale flags defined: '{}')", sourceResolution, targetResolution, config.ffmpeg().vid2vidscaleFlags());
-            } else {
-                log.warn("IGNORE scale currently");
             }
         } else {
             log.debug("Source dimension {} already equals requested dimension, skipping option '-vf scale=wxh' on next command", sourceResolution);
@@ -134,6 +136,7 @@ public class VideoBuilder extends Builder {
 
         sb.append(" -r ");
         sb.append(framerate);
+        sb.append(" -acodec aac -b:a 192k -ac 2 -ar 44100 ");
         sb.append(" -t ");
         sb.append(targetLength);
         sb.append(" -y ");

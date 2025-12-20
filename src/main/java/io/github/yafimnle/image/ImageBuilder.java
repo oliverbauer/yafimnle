@@ -3,7 +3,6 @@ package io.github.yafimnle.image;
 import io.github.yafimnle.common.Builder;
 import io.github.yafimnle.config.AllowedFiles;
 import io.github.yafimnle.config.Config;
-import io.github.yafimnle.exception.H264Exception;
 import io.github.yafimnle.image.ar.AbstractAROptions;
 import io.github.yafimnle.image.filter.ImageFilters;
 import io.github.yafimnle.image.filter.Transformations;
@@ -57,9 +56,6 @@ public class ImageBuilder extends Builder {
             log.info("name of encoded result defined as {}", encodingResult());
 
             targetFilename = encodingResult().getName();
-            if (targetFilename.contains(".")) {
-                throw new H264Exception("Please use no '.' in filename in 'of'-method");
-            }
         }
         File intermediateImage = new File(destinationDir + "/" + originalInputFile().getParent() + "/" + targetFilename + ".jpg");
         encodingResult(new File(destinationDir + "/" + originalInputFile().getParent() + "/" + targetFilename + ".mp4"));
@@ -85,6 +81,7 @@ public class ImageBuilder extends Builder {
 
         // Preprocessing chain
         var preprocessed = copy;
+        imageFilterProcessBeforeCrop.addAll(config.magick().preprocessFilters()); // defaults to empty list
         for (ImageFilter preprocessingFilter : imageFilterProcessBeforeCrop) {
             preprocessed = preprocessingFilter.process(preprocessed, destinationDir);
         }

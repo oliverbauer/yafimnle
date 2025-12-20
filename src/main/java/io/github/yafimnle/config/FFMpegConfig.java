@@ -101,17 +101,11 @@ public class FFMpegConfig {
      * "The ratecontrol lookahead (rc-lookahead) setting determines how far ahead the video buffer verifier (VBV) and macroblock tree (mbtree) can look. Raising this can slightly increase memory use, but it's generally best to leave this as high as possible:
      * --rc-lookahead 250
      * If you're low on memory, you can lower it to e.g. 60."
+     *
+     *- x264-params rc_lookahead=20
+     * -x264-params rc_lookahead=20:threads=2:slices=0
      */
-    private Integer vidEncH264RCLookahreadFor2160p = 20;
-    /**
-     * https://silentaperture.gitlab.io/mdbook-guide/encoding/x264.html#ratecontrol-lookahead
-     * <p>
-     * "The ratecontrol lookahead (rc-lookahead) setting determines how far ahead the video buffer verifier (VBV) and macroblock tree (mbtree) can look. Raising this can slightly increase memory use, but it's generally best to leave this as high as possible:
-     * --rc-lookahead 250
-     * If you're low on memory, you can lower it to e.g. 60."
-     */
-    private Integer vidEncH264RCLookahreadFor1080p = 100;
-
+    private String vidEncH264RCLookahreadFor2160p = "";
 
     /**
      * If you know your input videos have same dimension. See e.g. HerbstInTirolUndBayern_V2_OutlineV2 for joining after new apporach of
@@ -240,12 +234,8 @@ public class FFMpegConfig {
         return instance;
     }
 
-    public Integer vidEncH264RCLookahreadFor2160p() {
+    public String vidEncH264RCLookahreadFor2160p() {
         return instance.vidEncH264RCLookahreadFor2160p;
-    }
-
-    public Integer vidEncH264RCLookahreadFor1080p() {
-        return instance.vidEncH264RCLookahreadFor1080p;
     }
 
     public Integer imgToVidSeconds() {

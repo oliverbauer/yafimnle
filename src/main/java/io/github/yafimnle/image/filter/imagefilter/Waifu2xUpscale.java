@@ -1,24 +1,22 @@
 package io.github.yafimnle.image.filter.imagefilter;
 
-import io.github.yafimnle.config.Config;
 import io.github.yafimnle.utils.CLI;
 import io.github.yafimnle.utils.FileUtils;
 
 import java.io.File;
 
-public class Monocrome implements ImageFilter {
+/**
+ * TODO Create additional config with path to waifu, make n configurable
+ */
+public class Waifu2xUpscale implements ImageFilter {
     @Override
     public File process(File input, String destinationDir) {
-        String path = input.getParent();
-        String name = input.getName();
-        String suffix = name.substring(name.length()-3);
-
-        String newName = path+"/"+name+"-intermediate-partialblur."+suffix;
+        String newName = destinationDir + "/" + input.getParent() + "/" + input.getName() + "-waifu2x-upscale.jpg";
 
         String i = FileUtils.escapeWhitespaces(input);
         String o = FileUtils.escapeWhitespaces(new File(newName));
 
-        CLI.exec(Config.instance().magick().command()+" "+i+" -monochrome "+o, this);
+        CLI.exec("/home/oliver/Downloads/waifu2x-ncnn-vulkan-20250915-linux/waifu2x-ncnn-vulkan -i "+i+" -o "+o+" -n 3 -s 2", this);
 
         return new File(newName);
     }

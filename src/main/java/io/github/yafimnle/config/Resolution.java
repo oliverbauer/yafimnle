@@ -4,6 +4,7 @@ import lombok.Getter;
 
 public enum Resolution {
     LOW_QUALITY("540p", "960x540", "16:9",960, 540),   // fast encoding for review
+    // "720p" "1280x720" "16:9" 1280 720
     FULL_HD("1080p", "1920x1080", "16:9", 1920, 1080), // 1920x1080, Full-HD, default
     ULTRA_HD("2160p", "3840x2160", "16:9", 3840, 2160), // 3840x2160, 4K, Ultra HD
 

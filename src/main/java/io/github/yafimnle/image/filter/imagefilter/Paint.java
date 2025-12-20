@@ -2,6 +2,7 @@ package io.github.yafimnle.image.filter.imagefilter;
 
 import io.github.yafimnle.config.Config;
 import io.github.yafimnle.utils.CLI;
+import io.github.yafimnle.utils.FileUtils;
 
 import java.io.File;
 
@@ -28,7 +29,10 @@ public class Paint implements ImageFilter {
 
         String newName = path+"/"+name+"-intermediate-paint."+suffix;
 
-        CLI.exec(Config.instance().magick().command()+" "+input+" -region "+width+"x"+height+"+"+x+"+"+y+" -paint "+factor+" +region "+newName, this);
+        String i = FileUtils.escapeWhitespaces(input);
+        String o = FileUtils.escapeWhitespaces(new File(newName));
+
+        CLI.exec(Config.instance().magick().command()+" "+i+" -region "+width+"x"+height+"+"+x+"+"+y+" -paint "+factor+" +region "+o, this);
 
         return new File(newName);
     }

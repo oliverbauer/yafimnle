@@ -38,7 +38,7 @@ public class FFMpegJoiner {
         if (new File(destinationDir+"/"+outputscript+"-"+apprev+"-full.mp4").exists()) {
             log.warn("Output {} exists, skipping", destinationDir + "/" + outputscript + "-" + apprev + "-full.mp4");
         } else {
-            CLI.exec(command + " -n -f concat -safe 0 -i " + filename + " -c copy " + destinationDir + "/" + outputscript + "-" + apprev + "-full.mp4", this);
+            CLI.exec(command + " -n -f concat -safe 0 -i " + filename + " -c:v copy -c:a libmp3lame " + destinationDir + "/" + outputscript + "-" + apprev + "-full.mp4", this);
         }
 
         return new File(destinationDir + "/" + outputscript + "-" + apprev + "-full.mp4");
