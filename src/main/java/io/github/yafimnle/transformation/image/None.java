@@ -47,7 +47,7 @@ public class None implements Transformation {
                 .append(formatOutput).append("-b:a 192k -ac 2 -ar 44100 -vcodec ").append(codec).append(" -map [v] -map [a] -t ").append(seconds)                // audio and video definition
                 .append(formatOutput).append("-y ")                                                                                                // do not override if "output" already exists
                 // https://video.stackexchange.com/questions/34800/encode-still-image-video-effectively-in-ffmpeg
-                .append(" -r 25")
+                .append(" -r ").append(framerate)
                 .append(" -pix_fmt yuv420p ")
                 .append(Config.instance().ffmpeg().encoderOptions())                                                  // video definition
                 .append(" ").append(FileUtils.escapeWhitespaces(output)).toString();                                                                        // result

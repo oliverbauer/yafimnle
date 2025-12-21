@@ -42,6 +42,14 @@ public class VideoBuilder extends Builder {
         var targetResolution = config.resolution();
         var destinationDir = config.destinationDir();
         var codec = config.ffmpeg().codec();
+        var profile = "";
+        if (config.ffmpeg().profile() != null) {
+            profile = "-profile:v " + config.ffmpeg().profile();
+        }
+        var preset = "";
+        if (config.ffmpeg().preset() != null) {
+            preset = "-preset " + config.ffmpeg().preset();
+        }
 
         if (config.ffmpeg().forceSkipReencoding()) {
             log.info("Force skip reencoding for original input: {}", originalInputFile());
@@ -141,11 +149,13 @@ public class VideoBuilder extends Builder {
         sb.append(targetLength);
         sb.append(" -y ");
         sb.append(configThreads);
-        sb.append(" ");
         sb.append(" -c:v ");
         sb.append(codec);
         sb.append(" ");
-
+        sb.append(profile);
+        sb.append(" ");
+        sb.append(preset);
+        sb.append(" ");
         sb.append(config.ffmpeg().encoderOptions());
         if (transformation != null) {
             sb.append(" -map [v] -map [a]"); // TODO Map a

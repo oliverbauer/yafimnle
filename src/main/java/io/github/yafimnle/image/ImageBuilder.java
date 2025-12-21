@@ -12,7 +12,6 @@ import io.github.yafimnle.transformation.image.ZoomIn;
 import io.github.yafimnle.utils.CLI;
 import io.github.yafimnle.utils.FileUtils;
 import io.github.yafimnle.utils.Logs;
-import io.github.yafimnle.utils.SanityCheck;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
@@ -91,7 +90,6 @@ public class ImageBuilder extends Builder {
         // required by e.g. AR.extractResolution(7008, 2160, 0, 1500)
         for (ImageFilter imageFilter : imageFilterProcessAfterCrop) {
             intermediateImage = imageFilter.process(intermediateImage, destinationDir);
-            SanityCheck.checkDimension(intermediateImage);
         }
 
         encodingResult(transformation.fromImageToVideo(intermediateImage, encodingResult(), seconds, destinationDir));

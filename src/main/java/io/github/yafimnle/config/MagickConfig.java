@@ -5,7 +5,6 @@ import io.github.yafimnle.image.ar.AbstractAROptions;
 import io.github.yafimnle.image.enums.Gravity;
 import io.github.yafimnle.image.filter.imagefilter.ImageFilter;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

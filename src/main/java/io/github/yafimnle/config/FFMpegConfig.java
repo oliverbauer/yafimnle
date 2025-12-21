@@ -123,12 +123,8 @@ public class FFMpegConfig {
      */
     private String codec = "libx264";
 
-
-
-
-
-
-
+    private String profile = null; // See https://trac.ffmpeg.org/wiki/Encode/H.264 you may set this to "main", "high", "high422"
+    private String preset = null; // See https://trac.ffmpeg.org/wiki/Encode/H.264 you may set this to "ultrafast", "veryslow". Default by FFMpeg: "medium"
 
     // Konstructor
     private FFMpegConfig() {
@@ -243,6 +239,23 @@ public class FFMpegConfig {
     }
     public FFMpegConfig imgToVidSeconds(int seconds) {
         instance.imgToVidSeconds = seconds;
-        return  instance;
+        return instance;
+    }
+
+    public String profile() {
+        return instance.profile;
+    }
+    public FFMpegConfig profile(String profile) {
+        instance.profile = profile;
+        return instance;
+    }
+
+    public String preset() {
+        return instance.preset;
+    }
+
+    public FFMpegConfig preset(String preset) {
+        instance.preset = preset;
+        return instance;
     }
 }

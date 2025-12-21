@@ -108,10 +108,12 @@ public class OutlineV2 implements Transformation {
 
     @Override
     public File fromImageToVideo(File input, File output, int seconds, String destinationDir) {
-        int framerate = Config.instance().ffmpeg().framerate();
-        String configThreads = Config.instance().ffmpeg().threads();
-        String loggingConfig = Config.instance().ffmpeg().loggingConfig();
-        String codec = Config.instance().ffmpeg().codec();
+        Config config = Config.instance();
+
+        int framerate = config.ffmpeg().framerate();
+        String configThreads = config.ffmpeg().threads();
+        String loggingConfig = config.ffmpeg().loggingConfig();
+        String codec = config.ffmpeg().codec();
 
         String filterComplex = "\""+toString();
 
@@ -119,6 +121,15 @@ public class OutlineV2 implements Transformation {
             String current = output.toString();
             current = current.substring(0, current.length() - 4) + ".mp4";
             output = new File(current);
+        }
+
+        var profile = "";
+        if (config.ffmpeg().profile() != null) {
+            profile = "-profile:v " + config.ffmpeg().profile();
+        }
+        var preset = "";
+        if (config.ffmpeg().preset() != null) {
+            preset = "-preset " + config.ffmpeg().preset();
         }
 
         String formatOutput = " \\\n\t "; // results in a command better readable
@@ -135,6 +146,10 @@ public class OutlineV2 implements Transformation {
                 .append(formatOutput).append(configThreads)// do not override if "output" already exists
                 .append(formatOutput).append("-r ").append(framerate)
                 .append(" -pix_fmt yuv420p ")
+                .append(profile)
+                .append(" ")
+                .append(preset)
+                .append(" ")
                 .append(Config.instance().ffmpeg().encoderOptions())                                                  // video definition
                 .append(" ").append(FileUtils.escapeWhitespaces(output)).toString();                                                                        // result
 

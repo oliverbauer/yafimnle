@@ -7,7 +7,6 @@ import io.github.yafimnle.ffmpeg.FFMpegJoiner;
 import io.github.yafimnle.ffmpeg.FFMpegScriptAudio;
 import io.github.yafimnle.ffmpeg.FFMpegScriptVideo;
 import io.github.yafimnle.image.ImageBuilder;
-import io.github.yafimnle.image.filter.Transformations;
 import io.github.yafimnle.transformation.Transformation;
 import io.github.yafimnle.utils.CLI;
 import io.github.yafimnle.utils.FileUtils;
@@ -118,7 +117,7 @@ public class YaFIMnle {
     /**
      * This method only joins results of builders, there is not re-encoding no "Fade" or no change in quality settings
      * possible.
-     *
+     * <p>
      * But this is amazingly fast. :-)
      *
      * @return
@@ -143,6 +142,12 @@ public class YaFIMnle {
      * @return
      */
     public File create() {
+        var finalResult = destinationDir + "/" + outputscript + "-full-" + config.resolution().apprev() + ".mp4";
+        if (new File(finalResult).exists()) {
+            log.warn("Result already exists, skipping further new encoding. Result: {}", finalResult);
+            return new File(finalResult);
+        }
+
         String codec = Config.instance().ffmpeg().codec();
 
         if (log.isInfoEnabled()) {
@@ -192,44 +197,21 @@ public class YaFIMnle {
         ffMpegScriptVideo.fade(builders);
 
         var mp4Output = destinationDir + "/" + outputscript + "-videoonly-" + config.resolution().apprev() + ".mp4";
-        switch (config.resolution()) {
-            case ULTRA_HD -> {
-                /*
-                 * rc_lookahead=0 reduces memory significantly!
-                 */
-                // "-profile:v high" not allowed by hevc_nvenc
-                var profile = "-profile:v high";
-                if (codec.contains("nvenc")) {
-                    profile = "";
-                }
 
-                var addVideoEncOptions = "-c:v "+codec+" "+profile+" -pix_fmt yuv420p "+config.ffmpeg().encoderOptions()+" " + config.ffmpeg().vidEncH264RCLookahreadFor2160p();
-                // TODO r 25?
-                // TODO crf
-                videoonlyStringBuilder.append(" " + addVideoEncOptions + " -acodec aac -b:a 192k -ac 2 -ar 44100 -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
-            }
-            case FULL_HD -> {
-                // "-profile:v high" not allowed by hevc_nvenc
-                var profile = "-profile:v high  -preset slow";
-                if (codec.contains("nvenc")) {
-                    profile = "";
-                }
-                if (codec.equals("libx265")) {
-                    profile = "-preset slow";
-                }
-
-                var addVideoEncOptions = "-c:v "+codec+" "+profile+" -pix_fmt yuv420p " + config.ffmpeg().encoderOptions() + " "+ config.ffmpeg().vidEncH264RCLookahreadFor2160p();
-                videoonlyStringBuilder.append(" " +addVideoEncOptions + " -acodec aac -b:a 192k -ac 2 -ar 44100 -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
-            }
-            case LOW_QUALITY -> {
-                var preset = "-preset veryfast";
-                if (codec.contains("nvenc")) {
-                    preset = "";
-                }
-
-                videoonlyStringBuilder.append(" -c:v "+codec+" "+preset+" -pix_fmt yuv420p -acodec aac -b:a 192k -ac 2 -ar 44100 -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
-            }
+        var profile = "";
+        if (config.ffmpeg().profile() != null) {
+            profile = "-profile:v " + config.ffmpeg().profile();
         }
+        var preset = "";
+        if (config.ffmpeg().preset() != null) {
+            preset = "-preset " + config.ffmpeg().preset();
+        }
+
+        var addVideoEncOptions = "-c:v " + codec + " " + profile + " " + preset + " -pix_fmt yuv420p " + config.ffmpeg().encoderOptions() + " " + config.ffmpeg().vidEncH264RCLookahreadFor2160p();
+        // TODO r 25?
+        // TODO crf
+        videoonlyStringBuilder.append(" " + addVideoEncOptions + " -acodec aac -b:a 192k -ac 2 -ar 44100 -map \"[v]\" -y " + config.ffmpeg().threads() + " " + mp4Output).append("\n");
+
         videoonlyStringBuilder.append("end=$(date)").append("\n");
         videoonlyStringBuilder.append("echo \"Encoding took time from $start to $end\"").append("\n");
         FileUtils.writeStringBuilderToFile(videoonlyStringBuilder, destinationDir + "/" + outputscript + "-videoonly-" + config.resolution().apprev() + ".sh");
@@ -249,10 +231,10 @@ public class YaFIMnle {
             var name = FileUtils.escapeWhitespaces(overlayMp3);
 
             // Verzeichnis erstellen falls nicht vorhanden
-            var path = destinationDir+"/"+FileUtils.escapeWhitespaces(overlayMp3.getParentFile());
+            var path = destinationDir + "/" + FileUtils.escapeWhitespaces(overlayMp3.getParentFile());
             new File(path).mkdirs();
 
-            CLI.exec("cp " + name + " " + destinationDir+"/"+FileUtils.escapeWhitespaces(overlayMp3.getParentFile()), this);
+            CLI.exec("cp " + name + " " + destinationDir + "/" + FileUtils.escapeWhitespaces(overlayMp3.getParentFile()), this);
             log.info("Generate audio-overlay-File...");
             // TODO ? -filter:a loudnorm
             // TODO fade-duration should be configurable
@@ -281,7 +263,7 @@ public class YaFIMnle {
         if (new File(finalResult).exists()) {
             log.warn(Logs.red("File {} already exists.. will not be overwritten"), finalResult);
         } else {
-            CLI.exec(Config.instance().ffmpeg().command()+" " +config.ffmpeg().loggingConfig() + " -i "+ videoInput + " -i " + audioInput + " -c copy -map 0:v -map 1:a -y " + finalResult, this);
+            CLI.exec(Config.instance().ffmpeg().command() + " " + config.ffmpeg().loggingConfig() + " -i " + videoInput + " -i " + audioInput + " -c copy -map 0:v -map 1:a -y " + finalResult, this);
         }
         return new File(finalResult);
     }
