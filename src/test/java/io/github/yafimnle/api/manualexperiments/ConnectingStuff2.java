@@ -5,7 +5,7 @@ import io.github.yafimnle.utils.CLI;
 public class ConnectingStuff2 {
     public static void main(String[] args) {
         ConnectingStuff2 connectingStuff2 = new ConnectingStuff2();
-        connectingStuff2.foo();;
+        connectingStuff2.foo();
     }
     public void foo() {
 

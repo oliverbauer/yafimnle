@@ -7,6 +7,7 @@ import java.io.File;
 
 public class ExtendByColor implements AbstractAROptions {
     private String color = "Black";
+    private boolean enforceCorrectResolution = false;
 
     public ExtendByColor color(String color) {
         this.color = color;
@@ -18,11 +19,21 @@ public class ExtendByColor implements AbstractAROptions {
         // TODO Improve no resize!
         // /home/oliver/ffmpeg-video-gen/yafimnle-binaries/magick-7.1.1-43-Q16-HDRI-x86_64 496.JPG -gravity Center -background none -extent '16:9#' 496.JPG-extend-169.jpg
 
-        return Config.instance().magick().command() +
+        String input = FileUtils.escapeWhitespaces(i);
+        String output = FileUtils.escapeWhitespaces(o);
+
+        Config config = Config.instance();
+
+        String cmd = config.magick().command();
+        String threads = config.magick().threads();
+        String ar = config.resolution().ar();
+        String dim = config.resolution().dimension();
+
+        return cmd +
                 " " +
-                Config.instance().magick().threads() +
+                threads +
                 " " +
-                FileUtils.escapeWhitespaces(i) +
+                input +
                 " " +
                 "-resize x" + // no space!
                 Config.instance().resolution().height() +
@@ -33,6 +44,6 @@ public class ExtendByColor implements AbstractAROptions {
                 "-compose Copy -gravity Center -extent " +
                 Config.instance().resolution().dimension() +
                 "+0+0 " +
-                FileUtils.escapeWhitespaces(o);
+                output;
     }
 }

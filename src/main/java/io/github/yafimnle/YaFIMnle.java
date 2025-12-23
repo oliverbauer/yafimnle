@@ -158,7 +158,7 @@ public class YaFIMnle {
             var videos = builders.size() - pictures;
             log.info("*********************************");
             log.info("* Creating video: {}, in directory {}", outputscript, destinationDir);
-            log.info("* Output quality: {}, CRF: {}", config.resolution().apprev(), config.ffmpeg().encoderOptions());
+            log.info("* Output quality: {}, encoder options: {}", config.resolution().apprev(), config.ffmpeg().encoderOptions());
             log.info("* Number of Inputs: {} ({} images, {} videos)", builders.size(), pictures, videos);
             log.info("*");
             log.info("* Config:");
@@ -177,9 +177,6 @@ public class YaFIMnle {
         }
 
         invokeBuilder(); // creates intermediate files
-
-
-        // TODO Recheck if separation of audioonly/videoonly is still necessary... new approach merges only videos with audio
 
         // AUDIO
         var audioonlyStringBuilder = ffMpegScriptAudio.stringBuilder();
@@ -221,12 +218,22 @@ public class YaFIMnle {
     }
 
     private File convert(int ende) {
-        if (new File(destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + ".aac").exists()) {
-            log.warn(Logs.red("File {}/{}-audioonly-{}.aac already exists.. will not be overwritten"), destinationDir, outputscript, config.resolution().apprev());
+        var audioOnlySh = destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + ".sh";
+        var audioOnlyAAC = destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + ".aac";
+        var audioOnlyOverlayAAC = destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + "-overlay.aac";
+
+        var videoOnlySh = destinationDir + "/" + outputscript + "-videoonly-" + config.resolution().apprev() + ".sh";
+        var videoOnlyMP4 = destinationDir + "/" + outputscript + "-videoonly-" + config.resolution().apprev() + ".mp4";
+        var finalResult = destinationDir + "/" + outputscript + "-full-" + config.resolution().apprev() + ".mp4";
+
+
+        if (new File(audioOnlyAAC).exists()) {
+            log.warn(Logs.red("File {} already exists.. will not be overwritten"), audioOnlyAAC);
         } else {
-            CLI.exec("bash " + destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + ".sh", this);
+            CLI.exec("bash " + audioOnlySh, this);
         }
 
+        String audioInput;
         if (overlayMp3 != null) {
             var name = FileUtils.escapeWhitespaces(overlayMp3);
 
@@ -234,36 +241,43 @@ public class YaFIMnle {
             var path = destinationDir + "/" + FileUtils.escapeWhitespaces(overlayMp3.getParentFile());
             new File(path).mkdirs();
 
-            CLI.exec("cp " + name + " " + destinationDir + "/" + FileUtils.escapeWhitespaces(overlayMp3.getParentFile()), this);
+            String i = FileUtils.escapeWhitespaces(overlayMp3);
+
+            try {
+                CLI.exec("mkdir "+destinationDir+"/"+FileUtils.escapeWhitespaces(overlayMp3.getParentFile()), this);
+            } catch (Exception e) {
+                // ignore directory exists
+            }
+
+            CLI.exec("cp " + i + " " + destinationDir + "/" + FileUtils.escapeWhitespaces(overlayMp3.getParentFile()), this);
             log.info("Generate audio-overlay-File...");
             // TODO ? -filter:a loudnorm
             // TODO fade-duration should be configurable
-            CLI.exec("ffmpeg -ss 0 -to " + ende + " -i " + destinationDir + "/" + name + " -af \"afade=t=in:st=0:duration=5,afade=t=out:st=" + (ende - 5) + ":duration=5,volume=0.5\" -b:a 192k -ar 44100 -ac 2 -y " + destinationDir + "/" + name + "-cutted.mp3", this);
-            CLI.exec("ffmpeg -i " + destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + ".aac -i " + destinationDir + "/" + name + "-cutted.mp3 -filter_complex amix=inputs=2:duration=first:dropout_transition=3 -b:a 192k -ar 44100 -ac 2 -y " + destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + "-overlay.aac", this);
+            var parent = FileUtils.escapeWhitespaces(overlayMp3.getParentFile());
+            var targetMp3 = destinationDir + parent + "/"+overlayMp3.getName() + "-cutted.mp3";
+
+            i = destinationDir+"/"+FileUtils.escapeWhitespaces(overlayMp3.getParentFile())+"/"+overlayMp3.getName();
+            CLI.exec("ffmpeg -ss 0 -to " + ende + " -i " + i + " -af \"afade=t=in:st=0:duration=5,afade=t=out:st=" + (ende - 5) + ":duration=5,volume=0.5\" -b:a 192k -ar 44100 -ac 2 -y " + targetMp3, this);
+            CLI.exec("ffmpeg -i " + audioOnlyAAC +" -i " + destinationDir + "/" + name + "-cutted.mp3 -filter_complex amix=inputs=2:duration=first:dropout_transition=3 -b:a 192k -ar 44100 -ac 2 -y " + audioOnlyOverlayAAC, this);
+
+            audioInput = destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + "-overlay.aac";
+        } else {
+            audioInput = audioOnlyAAC;
         }
 
-        if (new File(destinationDir + "/" + outputscript + "-videoonly-" + config.resolution().apprev() + ".mp4").exists()) {
-            log.warn(Logs.red("File {}/{}-videoonly-{}.mp4 already exists.. will not be overwritten"), destinationDir, outputscript, config.resolution().apprev());
+        if (new File(videoOnlyMP4).exists()) {
+            log.warn(Logs.red("File {} already exists.. will not be overwritten"), videoOnlyMP4);
         } else {
             var start = Instant.now();
-            CLI.exec("bash " + destinationDir + "/" + outputscript + "-videoonly-" + config.resolution().apprev() + ".sh", this);
+            CLI.exec("bash " + videoOnlySh, this);
             log.info("Done after {}", Logs.time(start));
         }
 
-
-        String audioInput;
-        if (overlayMp3 == null) {
-            audioInput = destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + ".aac";
-        } else {
-            audioInput = destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + "-overlay.aac";
-        }
-        var videoInput = destinationDir + "/" + outputscript + "-videoonly-" + config.resolution().apprev() + ".mp4";
-        var finalResult = destinationDir + "/" + outputscript + "-full-" + config.resolution().apprev() + ".mp4";
-
+        // put videoonly + audioonly together
         if (new File(finalResult).exists()) {
             log.warn(Logs.red("File {} already exists.. will not be overwritten"), finalResult);
         } else {
-            CLI.exec(Config.instance().ffmpeg().command() + " " + config.ffmpeg().loggingConfig() + " -i " + videoInput + " -i " + audioInput + " -c copy -map 0:v -map 1:a -y " + finalResult, this);
+            CLI.exec(Config.instance().ffmpeg().command() + " " + config.ffmpeg().loggingConfig() + " -i " + videoOnlyMP4 + " -i " + audioInput + " -c copy -map 0:v -map 1:a -y " + finalResult, this);
         }
         return new File(finalResult);
     }
