@@ -30,7 +30,7 @@ public class ZoomIn implements Transformation {
         var codec = Config.instance().ffmpeg().codec();
 
         // TODO Reuse ZoomPan from outlinev2?
-        String scaleFlags = Config.instance().ffmpeg().vid2vidscaleFlags();
+        String scaleFlags = Config.instance().ffmpeg().scaleFlags();
         var filterComplex = "\"[0:v]scale=" + scale + ":-1"+scaleFlags+",zoompan=z='zoom+"+speed+"':s=" + dimension + ":x=iw/2-(iw/zoom/2):y=ih/2-(ih/zoom/2):d=" + frames + "[v];[1:a]atrim=0:5[a]\"";
 
         if (!output.getName().endsWith("mp4")) {

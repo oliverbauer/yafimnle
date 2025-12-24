@@ -47,7 +47,7 @@ public class YaFIMnle {
         }
         ffMpegScriptVideo = new FFMpegScriptVideo();
 
-        String aacName = destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + ".aac";
+        String aacName = destinationDir + "/" + outputscript + "-audioonly.aac";
         ffMpegScriptAudio = new FFMpegScriptAudio(aacName);
     }
 
@@ -166,7 +166,7 @@ public class YaFIMnle {
             log.info("* - img->vid seconds:                      {}", config.ffmpeg().imgToVidSeconds());
             log.info("* - *  ->vid codec:                        {}", config.ffmpeg().codec());
             log.info("* - *  ->vid frame rate:                   {}", config.ffmpeg().framerate());
-            log.info("* - vid->vid scale-flags:                  {}", config.ffmpeg().vid2vidscaleFlags());
+            log.info("* - vid->vid scale-flags:                  {}", config.ffmpeg().scaleFlags());
 
             log.info("* - threads:                               {}", config.ffmpeg().threads());
             if (config.resolution() == Resolution.ULTRA_HD) {
@@ -182,7 +182,7 @@ public class YaFIMnle {
         var audioonlyStringBuilder = ffMpegScriptAudio.stringBuilder();
         ffMpegScriptAudio.appendInputs(builders);
         ffMpegScriptAudio.fade(builders);
-        FileUtils.writeStringBuilderToFile(audioonlyStringBuilder, destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + ".sh");
+        FileUtils.writeStringBuilderToFile(audioonlyStringBuilder, destinationDir + "/" + outputscript + "-audioonly.sh");
         // AUDIO END
 
         // VIDEO
@@ -193,7 +193,7 @@ public class YaFIMnle {
         log.debug("Video length: {}", ende);
         ffMpegScriptVideo.fade(builders);
 
-        var mp4Output = destinationDir + "/" + outputscript + "-videoonly-" + config.resolution().apprev() + ".mp4";
+        var mp4Output = destinationDir + "/" + outputscript + "-videoonly.mp4";
 
         var profile = "";
         if (config.ffmpeg().profile() != null) {
@@ -211,20 +211,20 @@ public class YaFIMnle {
 
         videoonlyStringBuilder.append("end=$(date)").append("\n");
         videoonlyStringBuilder.append("echo \"Encoding took time from $start to $end\"").append("\n");
-        FileUtils.writeStringBuilderToFile(videoonlyStringBuilder, destinationDir + "/" + outputscript + "-videoonly-" + config.resolution().apprev() + ".sh");
+        FileUtils.writeStringBuilderToFile(videoonlyStringBuilder, destinationDir + "/" + outputscript + "-videoonly.sh");
         // VIDEO END
 
         return convert(ende);
     }
 
     private File convert(int ende) {
-        var audioOnlySh = destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + ".sh";
-        var audioOnlyAAC = destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + ".aac";
-        var audioOnlyOverlayAAC = destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + "-overlay.aac";
+        var audioOnlySh = destinationDir + "/" + outputscript + "-audioonly.sh";
+        var audioOnlyAAC = destinationDir + "/" + outputscript + "-audioonly.aac";
+        var audioOnlyOverlayAAC = destinationDir + "/" + outputscript + "-audioonly-overlay.aac";
 
-        var videoOnlySh = destinationDir + "/" + outputscript + "-videoonly-" + config.resolution().apprev() + ".sh";
-        var videoOnlyMP4 = destinationDir + "/" + outputscript + "-videoonly-" + config.resolution().apprev() + ".mp4";
-        var finalResult = destinationDir + "/" + outputscript + "-full-" + config.resolution().apprev() + ".mp4";
+        var videoOnlySh = destinationDir + "/" + outputscript + "-videoonly.sh";
+        var videoOnlyMP4 = destinationDir + "/" + outputscript + "-videoonly.mp4";
+        var finalResult = destinationDir + "/" + outputscript + ".mp4";
 
 
         if (new File(audioOnlyAAC).exists()) {

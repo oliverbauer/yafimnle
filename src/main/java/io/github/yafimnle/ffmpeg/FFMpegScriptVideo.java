@@ -17,7 +17,7 @@ public class FFMpegScriptVideo extends FFMpegScript {
         var prevEnde = 0;
         for (int i = 0; i <= builders.size() - 1; i++) {
             var builder = builders.get(i);
-            var length = builder.encodedLength(); //FFProbe.instance().seconds(builder.encodingResult());
+            var length = builder.encodedLength();
 
             vidLengthList.add(length);
 

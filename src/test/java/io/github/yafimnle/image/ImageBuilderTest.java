@@ -188,7 +188,7 @@ class ImageBuilderTest {
 
         // when
         var actual = new ImageBuilder(i)
-                .fromPortrait()
+                .appendImageFilterBeforeCrop(ImageFilters.extend())
                 .as("from_portrait")
                 .create();
 
@@ -203,8 +203,8 @@ class ImageBuilderTest {
 
         // when
         var actual = new ImageBuilder(i)
-                .rotate(90)
-                .fromPortrait()
+                .appendImageFilterBeforeCrop(ImageFilters.rotate(90))
+                .appendImageFilterBeforeCrop(ImageFilters.extend()) // "fromPortrait"
                 .as("rotate_then_from_portrait")
                 .create();
 

@@ -10,7 +10,6 @@ import io.github.yafimnle.image.filter.imagefilter.ImageFilter;
 import io.github.yafimnle.transformation.Transformation;
 import io.github.yafimnle.transformation.image.ZoomIn;
 import io.github.yafimnle.utils.CLI;
-import io.github.yafimnle.utils.FileUtils;
 import io.github.yafimnle.utils.Logs;
 import lombok.extern.log4j.Log4j2;
 
@@ -21,8 +20,6 @@ import java.util.List;
 @Log4j2
 public class ImageBuilder extends Builder {
     int seconds = -1;
-    int rotate = -1;
-    boolean fromPortrait = false;
     AbstractAROptions arOptions = Config.instance().magick().defaultImageAspectRatio();
     Transformation transformation = new ZoomIn();
     List<ImageFilter> imageFilterProcessBeforeCrop = new ArrayList<>();
@@ -67,16 +64,6 @@ public class ImageBuilder extends Builder {
             log.info("{} {} {} (length {}s, directory {})", Logs.yellow("creating builder"), intermediateImage.getName(), encodingResult().getName(), seconds, encodingResult().getParent());
         }
 
-        if (rotate != -1) {
-            CLI.exec("convert -rotate 90 -resize "+config.resolution().dimension()+" "+ FileUtils.escapeWhitespaces(originalInputFile())+" -quality 100 "+FileUtils.escapeWhitespaces(intermediateImage), this);
-            originalInputFile(intermediateImage);
-        }
-        if (fromPortrait) {
-            //convert -rotate 90 -resize 1920x1080 -background black -gravity center -extent 1920x1080 DSCI0042.jpg -quality 100 DSCI0042-rotated.jpg
-            CLI.exec("convert -resize "+config.resolution().dimension()+" -background black -gravity center -extent "+config.resolution().dimension()+" "+FileUtils.escapeWhitespaces(originalInputFile())+" -quality 100 "+FileUtils.escapeWhitespaces(intermediateImage), this);
-            originalInputFile(intermediateImage);
-        }
-
         // Preprocessing chain
         var preprocessed = originalInputFile();
         imageFilterProcessBeforeCrop.addAll(config.magick().preprocessFilters()); // defaults to empty list
@@ -93,19 +80,6 @@ public class ImageBuilder extends Builder {
 
         encodingResult(transformation.fromImageToVideo(intermediateImage, encodingResult(), seconds, destinationDir));
         return encodingResult();
-    }
-
-    public ImageBuilder rotate(int degrees) {
-        this.rotate = degrees;
-        return this;
-    }
-
-    /*
-     * If input source does not need a rotation use only this method, if input source needs a rotation, and then it is portrait, use rotate(90).fromPortrait().
-     */
-    public ImageBuilder fromPortrait() {
-        this.fromPortrait = true;
-        return this;
     }
 
     public ImageBuilder seconds(int seconds) {

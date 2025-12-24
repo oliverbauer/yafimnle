@@ -2,6 +2,7 @@ package io.github.yafimnle.common;
 
 import io.github.yafimnle.config.Config;
 import io.github.yafimnle.exception.H264Exception;
+import io.github.yafimnle.utils.FileUtils;
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
 
@@ -42,7 +43,7 @@ public abstract class Builder {
     }
 
     public Builder as(String targetFilename) {
-        this.encodingResult = new File(Config.instance().destinationDir() + "/" + originalInputFile.getParent() + "/" + targetFilename);
+        this.encodingResult = FileUtils.file(Config.instance().destinationDir(), originalInputFile.getParent(), targetFilename);
         return this;
     }
 

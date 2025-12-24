@@ -6,7 +6,7 @@ import io.github.yafimnle.transformation.common.OutlineEntry;
 public class Scale extends OutlineEntry {
     @Override
     public String toString() {
-        String scaleFlags = Config.instance().ffmpeg().vid2vidscaleFlags();
+        String scaleFlags = Config.instance().ffmpeg().scaleFlags();
         return "scale="+ Config.instance().resolution().dimension()+scaleFlags;
     }
 }

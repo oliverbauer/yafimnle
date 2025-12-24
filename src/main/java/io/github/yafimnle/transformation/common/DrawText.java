@@ -24,14 +24,14 @@ public class DrawText extends OutlineEntry {
     FadeOut fadeOut;
 
     public String toString() {
-        var reequired = "drawtext=text=\""+text+"\":fontcolor="+fontcolor+":fontsize="+fontsize+":y="+y+":x="+x;
+        var required = "drawtext=text=\""+text+"\":fontcolor="+fontcolor+":fontsize="+fontsize+":y="+y+":x="+x;
         if (fadeIn != null && fadeOut != null) {
-            return reequired+","+fadeIn+","+fadeOut;
+            return required +","+fadeIn+","+fadeOut;
         } else if (fadeIn != null) {
-            return reequired+","+fadeIn;
+            return required +","+fadeIn;
         } else if (fadeOut != null) {
-            return reequired+","+fadeOut;
+            return required +","+fadeOut;
         }
-        return reequired;
+        return required;
     }
 }

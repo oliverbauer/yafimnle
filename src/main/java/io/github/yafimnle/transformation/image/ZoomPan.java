@@ -39,7 +39,7 @@ public class ZoomPan extends OutlineEntry {
     int duration = 250;
 
     public String toString() {
-        String scaleFlags = Config.instance().ffmpeg().vid2vidscaleFlags();
+        String scaleFlags = Config.instance().ffmpeg().scaleFlags();
         return "scale="+scale+scaleFlags+",zoompan=z="+z+":s="+ Config.instance().resolution().dimension() +":x="+x+":y="+y+":d="+ duration;
     }
 

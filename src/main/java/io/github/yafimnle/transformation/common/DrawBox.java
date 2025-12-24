@@ -52,14 +52,14 @@ public class DrawBox extends OutlineEntry {
     FadeOut fadeOut;
 
     public String toString() {
-        var reequired = "drawbox=y="+y+":x="+x+":color="+color+":width="+width+":height="+height+":t="+t;
+        var required = "drawbox=y="+y+":x="+x+":color="+color+":width="+width+":height="+height+":t="+t;
         if (fadeIn != null && fadeOut != null) {
-            return reequired+","+fadeIn+","+fadeOut;
+            return required +","+fadeIn+","+fadeOut;
         } else if (fadeIn != null) {
-            return reequired+","+fadeIn;
+            return required +","+fadeIn;
         } else if (fadeOut != null) {
-            return reequired+","+fadeOut;
+            return required +","+fadeOut;
         }
-        return reequired;
+        return required;
     }
 }

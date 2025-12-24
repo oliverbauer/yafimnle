@@ -63,7 +63,7 @@ public class Presets {
                 .ffmpeg(FFMpegConfig.builder()
                         .command("ffmpeg")
                         .imgToVidSeconds(5)
-                        .vid2vidscaleFlags(":flags=lanczos")
+                        .scaleFlags(":flags=lanczos")
                         .fadelength(1)
                         .framerate(50)
                         .codec("libx264")
@@ -91,7 +91,7 @@ public class Presets {
                         .imgToVidSeconds(5)
                         .fadelength(1)
                         .framerate(25)
-                        .vid2vidscaleFlags(":flags=lanczos")
+                        .scaleFlags(":flags=lanczos")
                         .codec("h264_nvenc")
                         .encoderOptions("-rc vbr -cq 23")
                         .threads("-threads 1") // Slow down encoding, but reduce CPU usage
@@ -115,7 +115,7 @@ public class Presets {
                         .imgToVidSeconds(5)
                         .fadelength(1)
                         .framerate(25)
-                        .vid2vidscaleFlags(":flags=lanczos")
+                        .scaleFlags(":flags=lanczos")
                         .codec("hevc_nvenc")
                         .encoderOptions("-rc vbr -cq 23")
                         .threads("-threads 1") // Slow down encoding, but reduce CPU usage
@@ -167,7 +167,7 @@ public class Presets {
                         .imgToVidSeconds(5)
                         .fadelength(1)
                         .framerate(25)
-                        .vid2vidscaleFlags(":flags=lanczos")
+                        .scaleFlags(":flags=lanczos")
                         .codec("h264_nvenc")
                         .encoderOptions("-rc vbr -cq 25")
                         .threads("-threads 1") // Slow down encoding, but reduce CPU usage

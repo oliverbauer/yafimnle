@@ -38,7 +38,7 @@ public class VideoBuilder extends Builder {
         var configThreads = config.ffmpeg().threads();
         var loggingConfig = config.ffmpeg().loggingConfig();
         var framerate = config.ffmpeg().framerate();
-        var filterAudio = config.ffmpeg().vid2vidaudioFilter();
+        var filterAudio = config.ffmpeg().audioFilter();
         var targetResolution = config.resolution();
         var destinationDir = config.destinationDir();
         var codec = config.ffmpeg().codec();
@@ -132,8 +132,8 @@ public class VideoBuilder extends Builder {
             if (transformation == null) {
                 sb.append(" -vf scale=");
                 sb.append(targetResolution.dimension());
-                sb.append(config.ffmpeg().vid2vidscaleFlags()); //  TODO scale denoise video->video
-                log.debug("Source dimension {} does not equals requested dimension {}, adding option '-vf scale=wxh' on next command (scale flags defined: '{}')", sourceResolution, targetResolution, config.ffmpeg().vid2vidscaleFlags());
+                sb.append(config.ffmpeg().scaleFlags()); //  TODO scale denoise video->video
+                log.debug("Source dimension {} does not equals requested dimension {}, adding option '-vf scale=wxh' on next command (scale flags defined: '{}')", sourceResolution, targetResolution, config.ffmpeg().scaleFlags());
             }
         } else {
             log.debug("Source dimension {} already equals requested dimension, skipping option '-vf scale=wxh' on next command", sourceResolution);

@@ -71,9 +71,9 @@ public class FFMpegConfig {
      * </p>
      */
     @Builder.Default
-    private String vid2vidscaleFlags = "";
+    private String scaleFlags = ":flags=lanczos";
     @Builder.Default
-    private String vid2vidaudioFilter = "-filter:a loudnorm -b:a 192k -ac 2 -ar 44100";
+    private String audioFilter = "-filter:a loudnorm -b:a 192k -ac 2 -ar 44100";
 
     /**
      * <b>Default:</b> "-crf 20" (used by default codec "libx264")

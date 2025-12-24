@@ -26,8 +26,6 @@ public class ExtendByColor implements AbstractAROptions {
 
         String cmd = config.magick().command();
         String threads = config.magick().threads();
-        String ar = config.resolution().ar();
-        String dim = config.resolution().dimension();
 
         return cmd +
                 " " +

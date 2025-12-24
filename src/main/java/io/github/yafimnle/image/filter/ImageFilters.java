@@ -56,4 +56,15 @@ public class ImageFilters {
     public static Colorspace colorspace() {
         return new Colorspace();
     }
+
+    public static Rotate rotate() {
+        return new Rotate();
+    }
+    public static Rotate rotate(int degrees) {
+        return new Rotate(degrees);
+    }
+
+    public static Extend extend() {
+        return new Extend();
+    }
 }
