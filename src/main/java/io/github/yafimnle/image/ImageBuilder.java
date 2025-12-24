@@ -45,7 +45,6 @@ public class ImageBuilder extends Builder {
         if (seconds == -1) {
             seconds = config.ffmpeg().imgToVidSeconds();
         }
-        var copy = prepareTemporaryDirectory(originalInputFile(), destinationDir);
 
         String targetFilename;
         if (encodingResult() == null) {
@@ -75,11 +74,11 @@ public class ImageBuilder extends Builder {
         if (fromPortrait) {
             //convert -rotate 90 -resize 1920x1080 -background black -gravity center -extent 1920x1080 DSCI0042.jpg -quality 100 DSCI0042-rotated.jpg
             CLI.exec("convert -resize "+config.resolution().dimension()+" -background black -gravity center -extent "+config.resolution().dimension()+" "+FileUtils.escapeWhitespaces(originalInputFile())+" -quality 100 "+FileUtils.escapeWhitespaces(intermediateImage), this);
-            copy = intermediateImage;
+            originalInputFile(intermediateImage);
         }
 
         // Preprocessing chain
-        var preprocessed = copy;
+        var preprocessed = originalInputFile();
         imageFilterProcessBeforeCrop.addAll(config.magick().preprocessFilters()); // defaults to empty list
         for (ImageFilter preprocessingFilter : imageFilterProcessBeforeCrop) {
             preprocessed = preprocessingFilter.process(preprocessed, destinationDir);

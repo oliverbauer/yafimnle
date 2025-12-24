@@ -3,7 +3,6 @@ package io.github.yafimnle.common;
 import io.github.yafimnle.config.Config;
 import io.github.yafimnle.exception.H264Exception;
 import lombok.Data;
-import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
@@ -12,7 +11,6 @@ import java.io.File;
 @Data
 public abstract class Builder {
     private File originalInputFile;
-    private File originalInputFileCopy; // in temp directory
     private File encodingResult;
 
     // TODO create a default in FFMPegConfig such as fadeLength below
@@ -30,6 +28,14 @@ public abstract class Builder {
             throw new H264Exception("File does not exist: " + file);
         }
         this.originalInputFile = file;
+        // If input file is something like
+        //      "/home/user/input.jpg"
+        // and destinationDir something like
+        //      "/home/user/mynewvideo"
+        // temporary files will be put into
+        //      "/home/user/mynewvideo/home/user/"
+        // This allows to inspect temporary files and to have same "names" from different source directories.
+        new File(Config.instance().destinationDir() + "/" + originalInputFile.getParent() + "/").mkdirs();
     }
 
     public Builder as(String targetFilename) {
@@ -50,19 +56,4 @@ public abstract class Builder {
 
     // DestinationDir is set on Config
     public abstract File create();
-
-    protected File prepareTemporaryDirectory(File sourceFile, String destinationDir) {
-        // TODO re-check
-        if (originalInputFileCopy != null && originalInputFileCopy.exists()) {
-            log.trace("copy   done (already exists) {}", originalInputFileCopy);
-            return originalInputFileCopy;
-        } else {
-            File targetDir = new File(destinationDir + "/" + sourceFile.getParent() + "/");
-            targetDir.mkdirs();
-
-            originalInputFileCopy = new File(targetDir + "/" + originalInputFile.getName());
-
-            return originalInputFile;
-        }
-    }
 }

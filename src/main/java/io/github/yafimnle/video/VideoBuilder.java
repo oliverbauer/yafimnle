@@ -8,10 +8,13 @@ import io.github.yafimnle.transformation.Transformation;
 import io.github.yafimnle.utils.CLI;
 import io.github.yafimnle.utils.FileUtils;
 import io.github.yafimnle.utils.Logs;
+import io.github.yafimnle.video.filter.VideoFilter;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Log4j2
 public class VideoBuilder extends Builder {
@@ -19,6 +22,7 @@ public class VideoBuilder extends Builder {
     String to;
 
     Transformation transformation = null;
+    List<VideoFilter> videoFilterProcessBeforeEncoding = new ArrayList<>();
 
     public VideoBuilder(File file) {
         super(file);
@@ -29,10 +33,6 @@ public class VideoBuilder extends Builder {
     @Override
     public File create() {
         var config = Config.instance();
-
-        // TODO consider a "Preprocessing chain" like in ImageBuilder. This enables the possibility to use vidstabdetect + vidstabtransform
-        // ffmpeg -i input.mp4 -vf vidstabdetect -f null -
-        // ffmpeg -i input.mp4 -vf vidstabtransform output.mp4
 
         // Configuration
         var configThreads = config.ffmpeg().threads();
@@ -96,8 +96,6 @@ public class VideoBuilder extends Builder {
             );
         }
 
-        var copy = prepareTemporaryDirectory(originalInputFile(), destinationDir);
-
         var sb = new StringBuilder();
         sb.append(Config.instance().ffmpeg().command())
                 .append(" ")
@@ -113,8 +111,15 @@ public class VideoBuilder extends Builder {
             encodedLength(targetLength);
         }
 
+        // Preprocessing chain
+        var preprocessed = originalInputFile();
+        for (VideoFilter preprocessingFilter : videoFilterProcessBeforeEncoding) {
+            preprocessed = preprocessingFilter.process(preprocessed, destinationDir);
+        }
+        originalInputFile(preprocessed);
+
         sb.append(" -i ");
-        sb.append(FileUtils.escapeWhitespaces(copy));
+        sb.append(FileUtils.escapeWhitespaces(originalInputFile()));
         sb.append(" ");
         if (transformation != null) {
             // filter not allowed: -vf/-af/-filter and -filter_complex cannot be used together for the same stream.
@@ -158,12 +163,13 @@ public class VideoBuilder extends Builder {
         sb.append(" ");
         sb.append(config.ffmpeg().encoderOptions());
         if (transformation != null) {
-            sb.append(" -map [v] -map [a]"); // TODO Map a
+            sb.append(" -map [v] -map [a]");
         }
         sb.append(" ");
         sb.append(FileUtils.escapeWhitespaces(encodingResult()));
 
         Instant start = Instant.now();
+
         CLI.exec(sb.toString(), this);
 
         log.info("{} {} (created) (length {}s, enc-time {},  directory {})",
@@ -185,6 +191,11 @@ public class VideoBuilder extends Builder {
 
     public VideoBuilder transform(Transformation transformation) {
         this.transformation = transformation;
+        return this;
+    }
+
+    public VideoBuilder appendVideoFilterBeforeEncoding(VideoFilter videoFilter) {
+        this.videoFilterProcessBeforeEncoding.add(videoFilter);
         return this;
     }
 
