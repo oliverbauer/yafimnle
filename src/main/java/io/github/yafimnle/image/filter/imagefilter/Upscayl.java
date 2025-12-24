@@ -6,7 +6,7 @@ import io.github.yafimnle.utils.FileUtils;
 import java.io.File;
 
 public class Upscayl implements ImageFilter {
-    public static String installationPath = "/home/oliver/Downloads/upscayl-2.25.0-linux/";
+    public static final String installationPath = "/home/oliver/Downloads/upscayl-2.25.0-linux/";
 
     @Override
     public File process(File input, String destinationDir) {

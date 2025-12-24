@@ -42,10 +42,11 @@ public class Config {
         instance = new Config();
         if (withHardwareAcceleration) {
             instance.resolution(Resolution.FULL_HD)
-                    .ffmpeg(FFMpegConfig.ffmpeg()
+                    .ffmpeg(FFMpegConfig.builder()
                     .command("ffmpeg -hwaccel cuda")
                     .codec("h264_nvenc")
                     .encoderOptions("-rc vbr -cq 30")
+                    .build()
             );
         }
         return instance;
@@ -76,7 +77,7 @@ public class Config {
 
     public FFMpegConfig ffmpeg() {
         if (instance.ffMpegConfig == null) {
-            instance.ffMpegConfig = FFMpegConfig.ffmpeg();
+            instance.ffMpegConfig = FFMpegConfig.builder().build();
         }
         return instance.ffMpegConfig;
     }
@@ -90,7 +91,7 @@ public class Config {
 
     public MagickConfig magick() {
         if (magickConfig == null) {
-            instance.magickConfig = MagickConfig.magick();
+            instance.magickConfig = MagickConfig.builder().build();
         }
         return instance.magickConfig;
     }
@@ -101,7 +102,7 @@ public class Config {
 
     public TransformConfig transformConfig() {
         if (transformConfig == null) {
-            instance.transformConfig = TransformConfig.transformConfig();
+            instance.transformConfig = TransformConfig.builder().build();
         }
         return instance.transformConfig;
     }

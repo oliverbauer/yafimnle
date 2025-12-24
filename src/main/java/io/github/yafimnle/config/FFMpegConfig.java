@@ -1,13 +1,20 @@
 package io.github.yafimnle.config;
 
-// Note: Do not use lombok here in this class unless change from instance to "this"
+import io.github.yafimnle.common.FadeType;
+import lombok.Builder;
+import lombok.Getter;
+
+@Builder
+@Getter
 public class FFMpegConfig {
-    private static FFMpegConfig instance;
-
+    @Builder.Default
     private String command = "ffmpeg";
-
+    @Builder.Default
     private int imgToVidSeconds = 5;
+    @Builder.Default
     private int fadelength = 1;
+    @Builder.Default
+    private FadeType fadeType = FadeType.FADE;
 
     /**
      * A global configuration for all ffmpeg commands. Defaults to quiet logging. You may
@@ -21,6 +28,7 @@ public class FFMpegConfig {
      * </pre>
      * Implementation will set loglevel for e.g. image to video converstion to ffmpeg_loglevel_image_to_video
      */
+    @Builder.Default
     private String loggingConfig = "-loglevel quiet";
 
     /**
@@ -62,12 +70,9 @@ public class FFMpegConfig {
      * </ul>
      * </p>
      */
+    @Builder.Default
     private String vid2vidscaleFlags = "";
-    public FFMpegConfig vid2vidscaleFlags(String flags) {
-        instance.vid2vidscaleFlags = flags;
-        return instance;
-    }
-
+    @Builder.Default
     private String vid2vidaudioFilter = "-filter:a loudnorm -b:a 192k -ac 2 -ar 44100";
 
     /**
@@ -84,8 +89,9 @@ public class FFMpegConfig {
      * Tested with GeForce RTX 2060 SUPER.
      * </p>
      */
+    @Builder.Default
     private String encoderOptions = "-crf 20";
-
+    @Builder.Default
     private Integer framerate = 25;
 
     /**
@@ -93,6 +99,7 @@ public class FFMpegConfig {
      * <b>Note</b>: Needs to be an empty string or in the form '-threads x' (with x something like 1 or 2 or 4). If it is
      * an empty string, ffmpeg will decide (which normally means use a larger amount resulting in high CPU usage)
      */
+    @Builder.Default
     private String threads = "-threads 2";
 
     /**
@@ -105,12 +112,14 @@ public class FFMpegConfig {
      *- x264-params rc_lookahead=20
      * -x264-params rc_lookahead=20:threads=2:slices=0
      */
+    @Builder.Default
     private String vidEncH264RCLookahreadFor2160p = "";
 
     /**
      * If you know your input videos have same dimension. See e.g. HerbstInTirolUndBayern_V2_OutlineV2 for joining after new apporach of
      * single image->video.
      */
+    @Builder.Default
     private boolean forceSkipReencoding = false;
 
     /**
@@ -121,141 +130,10 @@ public class FFMpegConfig {
      * Note: encoderOptions needs to be adapted if codecs like h264_nvenc or hevc_nvenc are used!
      * </p>
      */
+    @Builder.Default
     private String codec = "libx264";
-
+    @Builder.Default
     private String profile = null; // See https://trac.ffmpeg.org/wiki/Encode/H.264 you may set this to "main", "high", "high422"
+    @Builder.Default
     private String preset = null; // See https://trac.ffmpeg.org/wiki/Encode/H.264 you may set this to "ultrafast", "veryslow". Default by FFMpeg: "medium"
-
-    // Konstructor
-    private FFMpegConfig() {
-        // private
-    }
-
-    public static FFMpegConfig ffmpeg() {
-        if (instance == null) {
-            instance = new FFMpegConfig();
-        }
-        return instance;
-    }
-
-    public String codec() {
-        return instance.codec;
-    }
-    public FFMpegConfig codec(String codec) {
-        instance.codec = codec;
-        return instance;
-    }
-
-    public String loggingConfig() {
-        return instance.loggingConfig;
-    }
-    public FFMpegConfig loggingConfig(String loggingConfig) {
-        instance.loggingConfig = loggingConfig;
-        return instance;
-    }
-
-    public FFMpegConfig forceSkipReencoding(boolean skip) {
-        instance.forceSkipReencoding = skip;
-        return instance;
-    }
-    public boolean forceSkipReencoding() {
-        return instance.forceSkipReencoding;
-    }
-
-    /**
-     * -crf 20
-     * or
-     *-rc vbr -cq 27
-     * if (codec = h264_nvenc)
-     *
-     * @param crf
-     * @return
-     */
-    public FFMpegConfig encoderOptions(String crf) {
-        instance.encoderOptions = crf;
-        return instance;
-    }
-
-
-    public FFMpegConfig fadelength(int fimFadelength) {
-        instance.fadelength = fimFadelength;
-        return instance;
-    }
-
-    public int fadelength() {
-        return instance.fadelength;
-    }
-
-
-    public String command() {
-        return instance.command;
-    }
-
-    public FFMpegConfig command(String command) {
-        instance.command = command;
-        return instance;
-    }
-
-    public String vid2vidscaleFlags() {
-        return instance.vid2vidscaleFlags;
-    }
-
-    public FFMpegConfig disableVid2VidAudioFilter() {
-        instance.vid2vidaudioFilter = "";
-        return this;
-    }
-
-    public String vid2vidaudioFilter() {
-        return instance.vid2vidaudioFilter;
-    }
-
-    public String encoderOptions() {
-        return instance.encoderOptions;
-    }
-
-    public Integer framerate() {
-        return instance.framerate;
-    }
-    public FFMpegConfig framerate(int framerate) {
-        instance.framerate = framerate;
-        return instance;
-    }
-
-    public String threads() {
-        return instance.threads;
-    }
-
-    public FFMpegConfig threads(int threads) {
-        instance.threads = "-threads "+threads;
-        return instance;
-    }
-
-    public String vidEncH264RCLookahreadFor2160p() {
-        return instance.vidEncH264RCLookahreadFor2160p;
-    }
-
-    public Integer imgToVidSeconds() {
-        return instance.imgToVidSeconds;
-    }
-    public FFMpegConfig imgToVidSeconds(int seconds) {
-        instance.imgToVidSeconds = seconds;
-        return instance;
-    }
-
-    public String profile() {
-        return instance.profile;
-    }
-    public FFMpegConfig profile(String profile) {
-        instance.profile = profile;
-        return instance;
-    }
-
-    public String preset() {
-        return instance.preset;
-    }
-
-    public FFMpegConfig preset(String preset) {
-        instance.preset = preset;
-        return instance;
-    }
 }

@@ -34,8 +34,8 @@ class YaFIMnleTest {
 
         // when
         cut.of(
-                YaFIMnle.img("2160x1620_4to3-2.jpg").as("1").fade(type),
-                YaFIMnle.img("2160x1620_4to3.jpg").as("2").fade(type),
+                YaFIMnle.img("2160x1620_4to3-2.jpg").as("1").fadeType(type),
+                YaFIMnle.img("2160x1620_4to3.jpg").as("2").fadeType(type),
                 YaFIMnle.img("2160x1620_4to3-2.jpg").as("3")
         ).create();
 
@@ -53,7 +53,7 @@ class YaFIMnleTest {
         var actual = cut.of(
                 YaFIMnle.img("2160x1620_4to3.jpg")
                         .transform(Transformations.none())
-                        .fade(FadeType.WIPELEFT)
+                        .fadeType(FadeType.WIPELEFT)
                         .fadeLength(1),
                 YaFIMnle.img("2160x1620_4to3-2.jpg")
                         .transform(Transformations.none())
@@ -82,11 +82,11 @@ class YaFIMnleTest {
         var actual = cut.of(
                 YaFIMnle.img("2160x1620_4to3.jpg")
                         .transform(Transformations.none())
-                        .fade(FadeType.WIPELEFT)
+                        .fadeType(FadeType.WIPELEFT)
                         .fadeLength(2),
                 YaFIMnle.img("2160x1620_4to3.jpg")
                         .transform(Transformations.none())
-                        .fade(FadeType.WIPELEFT)
+                        .fadeType(FadeType.WIPELEFT)
                         .fadeLength(2),
                 YaFIMnle.img("2160x1620_4to3.jpg")
                         .transform(Transformations.none())
@@ -121,11 +121,11 @@ class YaFIMnleTest {
         var actual = cut.of(
                 YaFIMnle.img("2160x1620_4to3.jpg")
                         .transform(Transformations.none())
-                        .fade(FadeType.WIPELEFT)
+                        .fadeType(FadeType.WIPELEFT)
                         .fadeLength(2),
                 YaFIMnle.img("2160x1620_4to3.jpg")
                         .transform(Transformations.none())
-                        .fade(FadeType.WIPELEFT)
+                        .fadeType(FadeType.WIPELEFT)
                         .fadeLength(1),
                 YaFIMnle.img("2160x1620_4to3.jpg")
                         .transform(Transformations.none())
@@ -161,12 +161,12 @@ class YaFIMnleTest {
                 YaFIMnle.img("2160x1620_4to3.jpg")
                         .transform(Transformations.none())
                         .seconds(10)
-                        .fade(FadeType.WIPELEFT)
+                        .fadeType(FadeType.WIPELEFT)
                         .fadeLength(2)
                         .as("1"),
                 YaFIMnle.img("2160x1620_4to3.jpg")
                         .transform(Transformations.none())
-                        .fade(FadeType.WIPELEFT)
+                        .fadeType(FadeType.WIPELEFT)
                         .fadeLength(1)
                         .as("2"),
                 YaFIMnle.img("2160x1620_4to3.jpg")
@@ -206,19 +206,19 @@ class YaFIMnleTest {
                 YaFIMnle.img("2160x1620_4to3.jpg")
                         .transform(Transformations.zoomout())
                         .seconds(10)
-                        .fade(FadeType.WIPERIGHT)
+                        .fadeType(FadeType.WIPERIGHT)
                         .fadeLength(5)
                         .as(scriptname+"-1"),
                 YaFIMnle.img("2160x1620_4to3.jpg")
                         .transform(Transformations.zoomin())
                         .seconds(10)
-                        .fade(FadeType.WIPELEFT)
+                        .fadeType(FadeType.WIPELEFT)
                         .fadeLength(5)
                         .as(scriptname+"-2"),
                 YaFIMnle.img("2160x1620_4to3.jpg")
                         .seconds(10)
                         .transform(Transformations.zoomout())
-                        .fade(FadeType.SLIDEDOWN)
+                        .fadeType(FadeType.SLIDEDOWN)
                         .fadeLength(5)
                         .as(scriptname+"-3"),
                 YaFIMnle.img("2160x1620_4to3-2.jpg")

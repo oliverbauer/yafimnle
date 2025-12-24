@@ -7,6 +7,7 @@ import io.github.yafimnle.ffmpeg.FFProbe;
 import io.github.yafimnle.image.ar.AR;
 import io.github.yafimnle.image.ar.AbstractAROptions;
 import io.github.yafimnle.image.enums.Gravity;
+import io.github.yafimnle.utils.CLI;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,11 +39,7 @@ class ImageCropperTest {
         Config.instance().resolution(resolution);
 
         // when
-        new ImageCropper().crop(
-                i,
-                o,
-                AR.crop(Gravity.CENTER)
-        );
+        CLI.exec(AR.crop(Gravity.CENTER).command(i, o), this);
         Resolution actual = FFProbe.instance().resolution(o);
 
         // then nothing has been cropped: Input is 16:9 resolution is always 16:9
@@ -62,11 +59,7 @@ class ImageCropperTest {
         Config.instance().resolution(resolution);
 
         // when
-        new ImageCropper().crop(
-                i,
-                o,
-                AR.crop(Gravity.CENTER)
-        );
+        CLI.exec(AR.crop(Gravity.CENTER).command(i, o), this);
         Resolution actual = FFProbe.instance().resolution(o);
 
         // then independently of resolution (always 16:9) crop is unique
@@ -86,11 +79,7 @@ class ImageCropperTest {
         File o = new File(DESTINATION_DIR + "2160x1620_4to3.jpg" + "-" +getClass().getSimpleName() + "-" + resolution.apprev() + "-" + ar.getClass().getSimpleName() + ".jpg");
 
         // when
-        new ImageCropper().crop(
-                i,
-                o,
-                ar
-        );
+        CLI.exec(AR.crop(Gravity.CENTER).command(i, o), this);
 
         // then: File has been copied and right dimension
         assertTrue(o.exists());

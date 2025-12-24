@@ -5,26 +5,21 @@ import io.github.yafimnle.common.Builder;
 import io.github.yafimnle.image.ImageBuilder;
 import io.github.yafimnle.transformation.Transformations;
 import io.github.yafimnle.video.VideoBuilder;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.util.List;
 
 class TransformConfigTest {
-    @BeforeEach
-    void freshConfig() {
+
+    @Test
+    void preset_no_transformation() {
+        // given
         Presets.hw_h265_hevc_no_transformation(
                 new File(getClass().getClassLoader().getResource("2160x1620_4to3.jpg").getFile()).getParentFile().getAbsolutePath(),
                 "/tmp/yafimnle"
         ).resolution(Resolution.LOW_QUALITY);
-    }
-    @Test
-    void preset_no_transformation() {
-        // Note: Here an override is defined for imageTransform and videoTransform (Preset). So even if they apply
-        //       zoomIn respective videoTransformation in img/vid-Methods, they are not applied.
 
-        // given
         var cut = new YaFIMnle("test1");
 
         // when
@@ -50,13 +45,11 @@ class TransformConfigTest {
 
     @Test
     void preset_no_transformation_override_img_zoom_in_and_text_outline() {
-        // Note: Here we "reset" override (Preset), so the overrides of img/vid-Methods are taken
-        //       This is normally *not* neccessary to "nullish" this overrides, but we use
-        //       "hw_h265_hevc_no_transformation" here to check everything went well...
-        Config.instance().transformConfig().overrideImageTransformation(null);
-        Config.instance().transformConfig().overrideVideoTransformation(null);
-
         // given
+        Presets.hw_h265_hevc(
+                new File(getClass().getClassLoader().getResource("2160x1620_4to3.jpg").getFile()).getParentFile().getAbsolutePath(),
+                "/tmp/yafimnle"
+        ).resolution(Resolution.LOW_QUALITY);
 
         var cut = new YaFIMnle("test2");
 

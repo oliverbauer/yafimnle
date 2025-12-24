@@ -2,7 +2,7 @@ package io.github.yafimnle.common;
 
 public enum FadeType {
     // https://ottverse.com/crossfade-between-videos-ffmpeg-xfade-filter/
-    FADE("fade"), // Default
+    FADE("fade"), // Default see FFMpegConfig
     CIRCLEOPEN("circleopen"),
     HBLUR("hblur"),
     DISSOLVE("dissolve"),

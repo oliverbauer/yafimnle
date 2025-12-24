@@ -23,7 +23,7 @@ public class ImageBuilder extends Builder {
     int seconds = -1;
     int rotate = -1;
     boolean fromPortrait = false;
-    AbstractAROptions arOptions;
+    AbstractAROptions arOptions = Config.instance().magick().defaultImageAspectRatio();
     Transformation transformation = new ZoomIn();
     List<ImageFilter> imageFilterProcessBeforeCrop = new ArrayList<>();
     List<ImageFilter> imageFilterProcessAfterCrop = new ArrayList<>();
@@ -41,7 +41,7 @@ public class ImageBuilder extends Builder {
     @Override
     public File create() {
         var config = Config.instance();
-        var destinationDir = Config.instance().destinationDir();
+        var destinationDir = config.destinationDir();
         if (seconds == -1) {
             seconds = config.ffmpeg().imgToVidSeconds();
         }
@@ -84,7 +84,7 @@ public class ImageBuilder extends Builder {
             preprocessed = preprocessingFilter.process(preprocessed, destinationDir);
         }
 
-        new ImageCropper().crop(preprocessed, intermediateImage, arOptions);
+        CLI.exec(arOptions.command(preprocessed, intermediateImage), this);
 
         // required by e.g. AR.extractResolution(7008, 2160, 0, 1500)
         for (ImageFilter imageFilter : imageFilterProcessAfterCrop) {

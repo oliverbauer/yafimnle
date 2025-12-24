@@ -37,7 +37,7 @@ public class FFMpegScriptVideo extends FFMpegScript {
 
         if (builders.size() > 1) {
             for (int i = 0; i <= builders.size() - 2; i++) {
-                var fadeType = builders.get(i).fade().param();
+                var fadeType = builders.get(i).fadeType().param();
                 var fadeLength = builders.get(i).fadeLength();
                 var offset = vidEndList.get(i) - fadeLength;
 

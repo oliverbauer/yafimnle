@@ -53,7 +53,7 @@ public class YaFIMnle {
 
     public static ImageBuilder img(String name) {
         var sourcePath = Config.instance().sourceDir();
-        var overrideImageTransformation = Config.instance().transformConfig().overrideImageTransformation();
+        var overrideImageTransformation = Config.instance().transformConfig().imageTransformation();
         if (overrideImageTransformation == null) {
             return new ImageBuilder(new File(sourcePath + "/" + name));
         } else {
@@ -63,7 +63,7 @@ public class YaFIMnle {
 
     public static ImageBuilder img(String name, Transformation transformations) {
         var sourcePath = Config.instance().sourceDir();
-        var overrideImageTransformation = Config.instance().transformConfig().overrideImageTransformation();
+        var overrideImageTransformation = Config.instance().transformConfig().imageTransformation();
         if (overrideImageTransformation == null) {
             return new ImageBuilder(new File(sourcePath + "/" + name)).transform(transformations);
         } else {
@@ -73,7 +73,7 @@ public class YaFIMnle {
 
     public static VideoBuilder vid(String name) {
         var sourcePath = Config.instance().sourceDir();
-        var overrideVideoTransformation = Config.instance().transformConfig().overrideVideoTransformation();
+        var overrideVideoTransformation = Config.instance().transformConfig().videoTransformation();
         if (overrideVideoTransformation == null) {
             return new VideoBuilder(new File(sourcePath + "/" + name));
         } else {
@@ -83,7 +83,7 @@ public class YaFIMnle {
 
     public static VideoBuilder vid(String name, Transformation transformations) {
         var sourcePath = Config.instance().sourceDir();
-        var overrideVideoTransformation = Config.instance().transformConfig().overrideVideoTransformation();
+        var overrideVideoTransformation = Config.instance().transformConfig().videoTransformation();
         if (overrideVideoTransformation == null) {
             return new VideoBuilder(new File(sourcePath + "/" + name)).transform(transformations);
         } else {

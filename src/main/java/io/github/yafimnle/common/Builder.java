@@ -13,10 +13,13 @@ public abstract class Builder {
     private File originalInputFile;
     private File encodingResult;
 
-    // TODO create a default in FFMPegConfig such as fadeLength below
-    private FadeType fade = FadeType.FADE; // default
     /**
-     * fadeLength can be set in Config, but between each to builders seperately too.
+     * fadeType can be set in Config, but between each to builders separately too.
+     */
+    private FadeType fadeType = Config.instance().ffmpeg().fadeType();
+
+    /**
+     * fadeLength can be set in Config, but between each to builders separately too.
      */
     private Integer fadeLength = Config.instance().ffmpeg().fadelength();
 
@@ -43,17 +46,26 @@ public abstract class Builder {
         return this;
     }
 
-
-    public Builder fade(FadeType fadeType) {
-        this.fade = fadeType;
+    /**
+     * Override default from FFMpegConfig.
+     * @param fadeType
+     * @return
+     */
+    public Builder fadeType(FadeType fadeType) {
+        this.fadeType = fadeType;
         return this;
     }
 
+    /**
+     * Override default from FFMpegConfig.
+     * @param length
+     * @return
+     */
     public Builder fadeLength(int length) {
         this.fadeLength = length;
         return this;
     }
 
-    // DestinationDir is set on Config
+    // destinationDir is set on Config
     public abstract File create();
 }
