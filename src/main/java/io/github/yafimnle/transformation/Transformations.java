@@ -5,8 +5,8 @@ import io.github.yafimnle.exception.IllegalArgsException;
 import io.github.yafimnle.transformation.common.DrawBox;
 import io.github.yafimnle.transformation.common.DrawText;
 import io.github.yafimnle.transformation.common.OutlineEntry;
-import io.github.yafimnle.transformation.image.ZoomPan;
-import io.github.yafimnle.transformation.video.Scale;
+import io.github.yafimnle.image.transformation.ZoomPan;
+import io.github.yafimnle.video.transformation.Scale;
 
 import java.util.ArrayList;
 import java.util.List;

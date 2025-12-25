@@ -32,12 +32,12 @@ public class YaFIMnle {
 
     File overlayMp3 = null;
 
-    String outputscript;
+    String videoname;
 
     // destinationDir set in Config
-    public YaFIMnle(String outputscript) {
+    public YaFIMnle(String videoname) {
         this.destinationDir = Config.instance().destinationDir();
-        this.outputscript = outputscript;
+        this.videoname = videoname;
 
         File file = new File(destinationDir);
         file.mkdirs();
@@ -47,7 +47,7 @@ public class YaFIMnle {
         }
         ffMpegScriptVideo = new FFMpegScriptVideo();
 
-        String aacName = destinationDir + "/" + outputscript + "-audioonly.aac";
+        String aacName = destinationDir + "/" + videoname + "-audioonly.aac";
         ffMpegScriptAudio = new FFMpegScriptAudio(aacName);
     }
 
@@ -130,7 +130,7 @@ public class YaFIMnle {
         }
 
         FFMpegJoiner joiner = new FFMpegJoiner();
-        return joiner.join(outputscript, files);
+        return joiner.join(videoname, files);
     }
 
     /**
@@ -142,7 +142,7 @@ public class YaFIMnle {
      * @return
      */
     public File create() {
-        var finalResult = destinationDir + "/" + outputscript + "-full-" + config.resolution().apprev() + ".mp4";
+        var finalResult = destinationDir + "/" + videoname + "-full-" + config.resolution().apprev() + ".mp4";
         if (new File(finalResult).exists()) {
             log.warn("Result already exists, skipping further new encoding. Result: {}", finalResult);
             return new File(finalResult);
@@ -157,7 +157,7 @@ public class YaFIMnle {
                     .count();
             var videos = builders.size() - pictures;
             log.info("*********************************");
-            log.info("* Creating video: {}, in directory {}", outputscript, destinationDir);
+            log.info("* Creating video: {}, in directory {}", videoname, destinationDir);
             log.info("* Output quality: {}, encoder options: {}", config.resolution().apprev(), config.ffmpeg().encoderOptions());
             log.info("* Number of Inputs: {} ({} images, {} videos)", builders.size(), pictures, videos);
             log.info("*");
@@ -182,7 +182,7 @@ public class YaFIMnle {
         var audioonlyStringBuilder = ffMpegScriptAudio.stringBuilder();
         ffMpegScriptAudio.appendInputs(builders);
         ffMpegScriptAudio.fade(builders);
-        FileUtils.writeStringBuilderToFile(audioonlyStringBuilder, destinationDir + "/" + outputscript + "-audioonly.sh");
+        FileUtils.writeStringBuilderToFile(audioonlyStringBuilder, destinationDir + "/" + videoname + "-audioonly.sh");
         // AUDIO END
 
         // VIDEO
@@ -193,7 +193,7 @@ public class YaFIMnle {
         log.debug("Video length: {}", ende);
         ffMpegScriptVideo.fade(builders);
 
-        var mp4Output = destinationDir + "/" + outputscript + "-videoonly.mp4";
+        var mp4Output = destinationDir + "/" + videoname + "-videoonly.mp4";
 
         var profile = "";
         if (config.ffmpeg().profile() != null) {
@@ -211,20 +211,20 @@ public class YaFIMnle {
 
         videoonlyStringBuilder.append("end=$(date)").append("\n");
         videoonlyStringBuilder.append("echo \"Encoding took time from $start to $end\"").append("\n");
-        FileUtils.writeStringBuilderToFile(videoonlyStringBuilder, destinationDir + "/" + outputscript + "-videoonly.sh");
+        FileUtils.writeStringBuilderToFile(videoonlyStringBuilder, destinationDir + "/" + videoname + "-videoonly.sh");
         // VIDEO END
 
         return convert(ende);
     }
 
     private File convert(int ende) {
-        var audioOnlySh = destinationDir + "/" + outputscript + "-audioonly.sh";
-        var audioOnlyAAC = destinationDir + "/" + outputscript + "-audioonly.aac";
-        var audioOnlyOverlayAAC = destinationDir + "/" + outputscript + "-audioonly-overlay.aac";
+        var audioOnlySh = destinationDir + "/" + videoname + "-audioonly.sh";
+        var audioOnlyAAC = destinationDir + "/" + videoname + "-audioonly.aac";
+        var audioOnlyOverlayAAC = destinationDir + "/" + videoname + "-audioonly-overlay.aac";
 
-        var videoOnlySh = destinationDir + "/" + outputscript + "-videoonly.sh";
-        var videoOnlyMP4 = destinationDir + "/" + outputscript + "-videoonly.mp4";
-        var finalResult = destinationDir + "/" + outputscript + ".mp4";
+        var videoOnlySh = destinationDir + "/" + videoname + "-videoonly.sh";
+        var videoOnlyMP4 = destinationDir + "/" + videoname + "-videoonly.mp4";
+        var finalResult = destinationDir + "/" + videoname + ".mp4";
 
 
         if (new File(audioOnlyAAC).exists()) {
@@ -234,20 +234,14 @@ public class YaFIMnle {
         }
 
         String audioInput;
+        String ffmpeg = Config.instance().ffmpeg().command();
         if (overlayMp3 != null) {
             var name = FileUtils.escapeWhitespaces(overlayMp3);
 
-            // Verzeichnis erstellen falls nicht vorhanden
-            var path = destinationDir + "/" + FileUtils.escapeWhitespaces(overlayMp3.getParentFile());
-            new File(path).mkdirs();
+            // Create directory if it does not exist. Note: No escaping here even if there are whitespaces in directory name of overlay.
+            new File(destinationDir + "/" + overlayMp3.getParentFile()).mkdirs();
 
             String i = FileUtils.escapeWhitespaces(overlayMp3);
-
-            try {
-                CLI.exec("mkdir "+destinationDir+"/"+FileUtils.escapeWhitespaces(overlayMp3.getParentFile()), this);
-            } catch (Exception e) {
-                // ignore directory exists
-            }
 
             CLI.exec("cp " + i + " " + destinationDir + "/" + FileUtils.escapeWhitespaces(overlayMp3.getParentFile()), this);
             log.info("Generate audio-overlay-File...");
@@ -257,10 +251,10 @@ public class YaFIMnle {
             var targetMp3 = destinationDir + parent + "/"+overlayMp3.getName() + "-cutted.mp3";
 
             i = destinationDir+"/"+FileUtils.escapeWhitespaces(overlayMp3.getParentFile())+"/"+overlayMp3.getName();
-            CLI.exec("ffmpeg -ss 0 -to " + ende + " -i " + i + " -af \"afade=t=in:st=0:duration=5,afade=t=out:st=" + (ende - 5) + ":duration=5,volume=0.5\" -b:a 192k -ar 44100 -ac 2 -y " + targetMp3, this);
-            CLI.exec("ffmpeg -i " + audioOnlyAAC +" -i " + destinationDir + "/" + name + "-cutted.mp3 -filter_complex amix=inputs=2:duration=first:dropout_transition=3 -b:a 192k -ar 44100 -ac 2 -y " + audioOnlyOverlayAAC, this);
+            CLI.exec(ffmpeg +" -ss 0 -to " + ende + " -i " + i + " -af \"afade=t=in:st=0:duration=5,afade=t=out:st=" + (ende - 5) + ":duration=5,volume=0.5\" -b:a 192k -ar 44100 -ac 2 -y " + targetMp3, this);
+            CLI.exec(ffmpeg +" -i " + audioOnlyAAC +" -i " + destinationDir + "/" + name + "-cutted.mp3 -filter_complex amix=inputs=2:duration=first:dropout_transition=3 -b:a 192k -ar 44100 -ac 2 -y " + audioOnlyOverlayAAC, this);
 
-            audioInput = destinationDir + "/" + outputscript + "-audioonly-" + config.resolution().apprev() + "-overlay.aac";
+            audioInput = audioOnlyOverlayAAC;
         } else {
             audioInput = audioOnlyAAC;
         }
@@ -277,7 +271,7 @@ public class YaFIMnle {
         if (new File(finalResult).exists()) {
             log.warn(Logs.red("File {} already exists.. will not be overwritten"), finalResult);
         } else {
-            CLI.exec(Config.instance().ffmpeg().command() + " " + config.ffmpeg().loggingConfig() + " -i " + videoOnlyMP4 + " -i " + audioInput + " -c copy -map 0:v -map 1:a -y " + finalResult, this);
+            CLI.exec(ffmpeg + " " + config.ffmpeg().loggingConfig() + " -i " + videoOnlyMP4 + " -i " + audioInput + " -c copy -map 0:v -map 1:a -y " + finalResult, this);
         }
         return new File(finalResult);
     }

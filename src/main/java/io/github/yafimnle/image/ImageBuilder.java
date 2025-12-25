@@ -8,7 +8,7 @@ import io.github.yafimnle.image.filter.ImageFilters;
 import io.github.yafimnle.image.filter.Transformations;
 import io.github.yafimnle.image.filter.imagefilter.ImageFilter;
 import io.github.yafimnle.transformation.Transformation;
-import io.github.yafimnle.transformation.image.ZoomIn;
+import io.github.yafimnle.image.transformation.ZoomIn;
 import io.github.yafimnle.utils.CLI;
 import io.github.yafimnle.utils.Logs;
 import lombok.extern.log4j.Log4j2;

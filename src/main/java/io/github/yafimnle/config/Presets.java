@@ -4,7 +4,7 @@ import io.github.yafimnle.image.ar.AR;
 import io.github.yafimnle.image.enums.Gravity;
 import io.github.yafimnle.image.filter.ImageFilters;
 import io.github.yafimnle.transformation.Transformations;
-import io.github.yafimnle.transformation.image.None;
+import io.github.yafimnle.image.transformation.None;
 
 import java.util.List;
 

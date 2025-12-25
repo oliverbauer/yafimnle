@@ -1,9 +1,9 @@
 package io.github.yafimnle.image.filter;
 
-import io.github.yafimnle.transformation.image.LeftToRight;
-import io.github.yafimnle.transformation.image.None;
-import io.github.yafimnle.transformation.image.ZoomIn;
-import io.github.yafimnle.transformation.image.ZoomOut;
+import io.github.yafimnle.image.transformation.LeftToRight;
+import io.github.yafimnle.image.transformation.None;
+import io.github.yafimnle.image.transformation.ZoomIn;
+import io.github.yafimnle.image.transformation.ZoomOut;
 
 public class Transformations {
     private Transformations() {

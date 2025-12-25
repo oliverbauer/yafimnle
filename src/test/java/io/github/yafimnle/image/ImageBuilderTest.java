@@ -11,7 +11,7 @@ import io.github.yafimnle.transformation.common.DrawBox;
 import io.github.yafimnle.transformation.common.DrawText;
 import io.github.yafimnle.transformation.common.FadeIn;
 import io.github.yafimnle.transformation.common.FadeOut;
-import io.github.yafimnle.transformation.image.ZoomPan;
+import io.github.yafimnle.image.transformation.ZoomPan;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

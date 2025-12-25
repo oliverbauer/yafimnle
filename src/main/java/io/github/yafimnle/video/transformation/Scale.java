@@ -1,4 +1,4 @@
-package io.github.yafimnle.transformation.video;
+package io.github.yafimnle.video.transformation;
 
 import io.github.yafimnle.config.Config;
 import io.github.yafimnle.transformation.common.OutlineEntry;

@@ -43,7 +43,7 @@ public class Config {
         if (withHardwareAcceleration) {
             instance.resolution(Resolution.FULL_HD)
                     .ffmpeg(FFMpegConfig.builder()
-                    .command("ffmpeg -hwaccel cuda")
+                    .command(instance.ffmpeg().command()+" -hwaccel cuda")
                     .codec("h264_nvenc")
                     .encoderOptions("-rc vbr -cq 30")
                     .build()
