@@ -1,9 +1,9 @@
 package io.github.yafimnle.config;
 
-import io.github.yafimnle.image.ar.AR;
-import io.github.yafimnle.image.ar.AbstractAROptions;
-import io.github.yafimnle.image.enums.Gravity;
-import io.github.yafimnle.image.filter.imagefilter.ImageFilter;
+import io.github.yafimnle.imagemagick.ar.AR;
+import io.github.yafimnle.imagemagick.ar.AbstractAROptions;
+import io.github.yafimnle.imagemagick.enums.Gravity;
+import io.github.yafimnle.imagemagick.filter.imagefilter.ImageFilter;
 import lombok.Builder;
 import lombok.Getter;
 

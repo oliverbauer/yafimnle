@@ -39,7 +39,7 @@ public abstract class Builder {
         // temporary files will be put into
         //      "/home/user/mynewvideo/home/user/"
         // This allows to inspect temporary files and to have same "names" from different source directories.
-        new File(Config.instance().destinationDir() + "/" + originalInputFile.getParent() + "/").mkdirs();
+        new File(Config.instance().destinationDir() + File.separator + originalInputFile.getParent() + File.separator).mkdirs();
     }
 
     public Builder as(String targetFilename) {

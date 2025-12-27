@@ -1,5 +1,7 @@
 package io.github.yafimnle.config;
 
+import io.github.yafimnle.ffmpeg.FilterComplexs;
+
 public class Config {
     private static Config instance = Config.instance();
 
@@ -47,7 +49,10 @@ public class Config {
                     .codec("h264_nvenc")
                     .encoderOptions("-rc vbr -cq 30")
                     .build()
-            );
+            ).transformConfig(TransformConfig.builder()
+                            .videoTransformation(FilterComplexs.videoTransformationNone())
+                            .imageTransformation(FilterComplexs.imageTransformationNone())// Still Image
+                            .build());
         }
         return instance;
     }

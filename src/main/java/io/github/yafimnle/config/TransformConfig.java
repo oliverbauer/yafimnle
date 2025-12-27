@@ -1,12 +1,14 @@
 package io.github.yafimnle.config;
 
-import io.github.yafimnle.transformation.Transformation;
+import io.github.yafimnle.ffmpeg.filtercomplex.FilterComplex;
 import lombok.Builder;
 import lombok.Getter;
 
 @Builder
 @Getter
 public class TransformConfig {
-    private Transformation videoTransformation;
-    private Transformation imageTransformation;
+    @Builder.Default
+    private FilterComplex videoTransformation = null;
+    @Builder.Default
+    private FilterComplex imageTransformation = null;
 }

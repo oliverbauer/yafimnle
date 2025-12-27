@@ -3,15 +3,13 @@ package io.github.yafimnle;
 import io.github.yafimnle.common.Builder;
 import io.github.yafimnle.config.Config;
 import io.github.yafimnle.config.Resolution;
-import io.github.yafimnle.ffmpeg.FFMpegJoiner;
-import io.github.yafimnle.ffmpeg.FFMpegScriptAudio;
-import io.github.yafimnle.ffmpeg.FFMpegScriptVideo;
-import io.github.yafimnle.image.ImageBuilder;
-import io.github.yafimnle.transformation.Transformation;
+import io.github.yafimnle.ffmpeg.*;
+import io.github.yafimnle.ffmpeg.filtercomplex.FilterComplex;
+import io.github.yafimnle.ffmpeg.filtercomplex.filter.ZoomPan;
+import io.github.yafimnle.imagemagick.ImageBuilder;
 import io.github.yafimnle.utils.CLI;
 import io.github.yafimnle.utils.FileUtils;
 import io.github.yafimnle.utils.Logs;
-import io.github.yafimnle.video.VideoBuilder;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
@@ -55,19 +53,19 @@ public class YaFIMnle {
         var sourcePath = Config.instance().sourceDir();
         var overrideImageTransformation = Config.instance().transformConfig().imageTransformation();
         if (overrideImageTransformation == null) {
-            return new ImageBuilder(new File(sourcePath + "/" + name));
+            return new ImageBuilder(new File(sourcePath + File.separator + name)).filterCompex(ZoomPan.zoomIn());
         } else {
-            return new ImageBuilder(new File(sourcePath + "/" + name)).transform(overrideImageTransformation);
+            return new ImageBuilder(new File(sourcePath + File.separator + name)).filterCompex(overrideImageTransformation);
         }
     }
 
-    public static ImageBuilder img(String name, Transformation transformations) {
+    public static ImageBuilder img(String name, FilterComplex transformations) {
         var sourcePath = Config.instance().sourceDir();
         var overrideImageTransformation = Config.instance().transformConfig().imageTransformation();
         if (overrideImageTransformation == null) {
-            return new ImageBuilder(new File(sourcePath + "/" + name)).transform(transformations);
+            return new ImageBuilder(new File(sourcePath + File.separator + name)).filterCompex(transformations);
         } else {
-            return new ImageBuilder(new File(sourcePath + "/" + name)).transform(overrideImageTransformation);
+            return new ImageBuilder(new File(sourcePath + File.separator + name)).filterCompex(overrideImageTransformation);
         }
     }
 
@@ -75,19 +73,19 @@ public class YaFIMnle {
         var sourcePath = Config.instance().sourceDir();
         var overrideVideoTransformation = Config.instance().transformConfig().videoTransformation();
         if (overrideVideoTransformation == null) {
-            return new VideoBuilder(new File(sourcePath + "/" + name));
+            return new VideoBuilder(new File(sourcePath + File.separator + name)).filterCompex(FilterComplexs.videoTransformationNone());
         } else {
-            return new VideoBuilder(new File(sourcePath + "/" + name)).transform(overrideVideoTransformation);
+            return new VideoBuilder(new File(sourcePath + File.separator + name)).filterCompex(overrideVideoTransformation);
         }
     }
 
-    public static VideoBuilder vid(String name, Transformation transformations) {
+    public static VideoBuilder vid(String name, FilterComplex transformations) {
         var sourcePath = Config.instance().sourceDir();
         var overrideVideoTransformation = Config.instance().transformConfig().videoTransformation();
         if (overrideVideoTransformation == null) {
-            return new VideoBuilder(new File(sourcePath + "/" + name)).transform(transformations);
+            return new VideoBuilder(new File(sourcePath + File.separator + name)).filterCompex(transformations);
         } else {
-            return new VideoBuilder(new File(sourcePath + "/" + name)).transform(overrideVideoTransformation);
+            return new VideoBuilder(new File(sourcePath + File.separator + name)).filterCompex(overrideVideoTransformation);
         }
     }
 
@@ -142,7 +140,7 @@ public class YaFIMnle {
      * @return
      */
     public File create() {
-        var finalResult = destinationDir + "/" + videoname + "-full-" + config.resolution().apprev() + ".mp4";
+        var finalResult = destinationDir + File.separator + videoname + "-full-" + config.resolution().apprev() + ".mp4";
         if (new File(finalResult).exists()) {
             log.warn("Result already exists, skipping further new encoding. Result: {}", finalResult);
             return new File(finalResult);
@@ -239,7 +237,7 @@ public class YaFIMnle {
             var name = FileUtils.escapeWhitespaces(overlayMp3);
 
             // Create directory if it does not exist. Note: No escaping here even if there are whitespaces in directory name of overlay.
-            new File(destinationDir + "/" + overlayMp3.getParentFile()).mkdirs();
+            new File(destinationDir + File.separator + overlayMp3.getParentFile()).mkdirs();
 
             String i = FileUtils.escapeWhitespaces(overlayMp3);
 

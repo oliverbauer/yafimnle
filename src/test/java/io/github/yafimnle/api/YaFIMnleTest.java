@@ -5,7 +5,8 @@ import io.github.yafimnle.common.FadeType;
 import io.github.yafimnle.config.Config;
 import io.github.yafimnle.config.Resolution;
 import io.github.yafimnle.ffmpeg.FFProbe;
-import io.github.yafimnle.image.filter.Transformations;
+import io.github.yafimnle.ffmpeg.FilterComplexs;
+import io.github.yafimnle.ffmpeg.filtercomplex.filter.ZoomPan;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,14 +53,14 @@ class YaFIMnleTest {
         // when
         var actual = cut.of(
                 YaFIMnle.img("2160x1620_4to3.jpg")
-                        .transform(Transformations.none())
+                        .filterCompex(FilterComplexs.imageTransformationNone())
                         .fadeType(FadeType.WIPELEFT)
                         .fadeLength(1),
                 YaFIMnle.img("2160x1620_4to3-2.jpg")
-                        .transform(Transformations.none())
+                        .filterCompex(FilterComplexs.imageTransformationNone())
                         .fadeLength(1),
                 YaFIMnle.img("2160x1620_4to3.jpg")
-                        .transform(Transformations.none())
+                        .filterCompex(FilterComplexs.imageTransformationNone())
         ).create();
 
         /*
@@ -81,15 +82,15 @@ class YaFIMnleTest {
         // when
         var actual = cut.of(
                 YaFIMnle.img("2160x1620_4to3.jpg")
-                        .transform(Transformations.none())
+                        .filterCompex(FilterComplexs.imageTransformationNone())
                         .fadeType(FadeType.WIPELEFT)
                         .fadeLength(2),
                 YaFIMnle.img("2160x1620_4to3.jpg")
-                        .transform(Transformations.none())
+                        .filterCompex(FilterComplexs.imageTransformationNone())
                         .fadeType(FadeType.WIPELEFT)
                         .fadeLength(2),
                 YaFIMnle.img("2160x1620_4to3.jpg")
-                        .transform(Transformations.none())
+                        .filterCompex(FilterComplexs.imageTransformationNone())
         ).create();
 
         /*
@@ -120,15 +121,15 @@ class YaFIMnleTest {
         // when
         var actual = cut.of(
                 YaFIMnle.img("2160x1620_4to3.jpg")
-                        .transform(Transformations.none())
+                        .filterCompex(FilterComplexs.imageTransformationNone())
                         .fadeType(FadeType.WIPELEFT)
                         .fadeLength(2),
                 YaFIMnle.img("2160x1620_4to3.jpg")
-                        .transform(Transformations.none())
+                        .filterCompex(FilterComplexs.imageTransformationNone())
                         .fadeType(FadeType.WIPELEFT)
                         .fadeLength(1),
                 YaFIMnle.img("2160x1620_4to3.jpg")
-                        .transform(Transformations.none())
+                        .filterCompex(FilterComplexs.imageTransformationNone())
         ).create();
 
         /*
@@ -159,18 +160,18 @@ class YaFIMnleTest {
         // when
         var actual = cut.of(
                 YaFIMnle.img("2160x1620_4to3.jpg")
-                        .transform(Transformations.none())
+                        .filterCompex(FilterComplexs.imageTransformationNone())
                         .seconds(10)
                         .fadeType(FadeType.WIPELEFT)
                         .fadeLength(2)
                         .as("1"),
                 YaFIMnle.img("2160x1620_4to3.jpg")
-                        .transform(Transformations.none())
+                        .filterCompex(FilterComplexs.imageTransformationNone())
                         .fadeType(FadeType.WIPELEFT)
                         .fadeLength(1)
                         .as("2"),
                 YaFIMnle.img("2160x1620_4to3.jpg")
-                        .transform(Transformations.none())
+                        .filterCompex(FilterComplexs.imageTransformationNone())
                         .as("3")
         ).create();
 
@@ -204,25 +205,25 @@ class YaFIMnleTest {
         // when
         var actual = cut.of(
                 YaFIMnle.img("2160x1620_4to3.jpg")
-                        .transform(Transformations.zoomout())
+                        .filterCompex(ZoomPan.zoomOut())
                         .seconds(10)
                         .fadeType(FadeType.WIPERIGHT)
                         .fadeLength(5)
                         .as(scriptname+"-1"),
                 YaFIMnle.img("2160x1620_4to3.jpg")
-                        .transform(Transformations.zoomin())
+                        .filterCompex(ZoomPan.zoomIn())
                         .seconds(10)
                         .fadeType(FadeType.WIPELEFT)
                         .fadeLength(5)
                         .as(scriptname+"-2"),
                 YaFIMnle.img("2160x1620_4to3.jpg")
                         .seconds(10)
-                        .transform(Transformations.zoomout())
+                        .filterCompex(ZoomPan.zoomOut())
                         .fadeType(FadeType.SLIDEDOWN)
                         .fadeLength(5)
                         .as(scriptname+"-3"),
                 YaFIMnle.img("2160x1620_4to3-2.jpg")
-                        .transform(Transformations.zoomin())
+                        .filterCompex(ZoomPan.zoomIn())
                         .seconds(10)
                         .as(scriptname+"-4")
         ).create();

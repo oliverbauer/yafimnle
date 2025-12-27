@@ -1,14 +1,17 @@
 package io.github.yafimnle.config;
 
-import io.github.yafimnle.image.ar.AR;
-import io.github.yafimnle.image.enums.Gravity;
-import io.github.yafimnle.image.filter.ImageFilters;
-import io.github.yafimnle.transformation.Transformations;
-import io.github.yafimnle.image.transformation.None;
+import io.github.yafimnle.ffmpeg.FilterComplexs;
+import io.github.yafimnle.imagemagick.ar.AR;
+import io.github.yafimnle.imagemagick.enums.Gravity;
+import io.github.yafimnle.imagemagick.filter.ImageFilters;
 
 import java.util.List;
 
 public class Presets {
+    private Presets() {
+
+    }
+
     public static Config x264_normal_quality(String sourceDir, String destinationDir) {
         return Config.freshInstance()
                 .resolution(Resolution.FULL_HD)
@@ -146,8 +149,8 @@ public class Presets {
                         .build()
                 )
                 .transformConfig(TransformConfig.builder()
-                        .videoTransformation(Transformations.videoTransformationNone())
-                        .imageTransformation(new None()) // Still Image
+                        .videoTransformation(FilterComplexs.videoTransformationNone())
+                        .imageTransformation(FilterComplexs.imageTransformationNone())// Still Image
                         .build()
                 );
     }
@@ -175,8 +178,8 @@ public class Presets {
                         .build()
                 )
                 .transformConfig(TransformConfig.builder()
-                        .videoTransformation(Transformations.videoTransformationNone())
-                        .imageTransformation(new None()) // Still Image
+                        .videoTransformation(FilterComplexs.videoTransformationNone())
+                        .imageTransformation(FilterComplexs.imageTransformationNone())// Still Image
                         .build()
                 );
     }

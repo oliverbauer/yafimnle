@@ -2,9 +2,9 @@ package io.github.yafimnle.config;
 
 import io.github.yafimnle.YaFIMnle;
 import io.github.yafimnle.common.Builder;
-import io.github.yafimnle.image.ImageBuilder;
-import io.github.yafimnle.transformation.Transformations;
-import io.github.yafimnle.video.VideoBuilder;
+import io.github.yafimnle.imagemagick.ImageBuilder;
+import io.github.yafimnle.ffmpeg.FilterComplexs;
+import io.github.yafimnle.ffmpeg.VideoBuilder;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -37,10 +37,10 @@ class TransformConfigTest {
     String subTitle = "Sub constant";
     String detailTitle = "NONE";
     protected ImageBuilder img(String img) {
-        return YaFIMnle.img(img, Transformations.zoomIn(detailTitle, subTitle, mainTitle, false));
+        return YaFIMnle.img(img, FilterComplexs.zoomIn(detailTitle, subTitle, mainTitle, false));
     }
     protected VideoBuilder vid(String vid) {
-        return YaFIMnle.vid(vid, Transformations.videoTransformation(detailTitle, subTitle, mainTitle, false));
+        return YaFIMnle.vid(vid, FilterComplexs.videoTransformation(detailTitle, subTitle, mainTitle, false));
     }
 
     @Test
@@ -55,11 +55,15 @@ class TransformConfigTest {
 
         // when
         detailTitle = "";
-        Builder builder1 = img("2160x1620_4to3-2.jpg").as("test2-1.mp4");
+        Builder builder1 = img("2160x1620_4to3-2.jpg")
+                .as("test2-1.mp4");
         detailTitle = "for video";
-        Builder builder2 = vid("1920x1080_50fps.mp4").as("test2-2.mp4");
+        Builder builder2 = vid("1920x1080_50fps.mp4")
+                .filterCompex(FilterComplexs.videoTransformation(mainTitle, subTitle, detailTitle, true))
+                .as("test2-2.mp4");
         detailTitle = "for image";
-        Builder builder3 = img("2160x1620_4to3.jpg").as("test2-3.mp4");
+        Builder builder3 = img("2160x1620_4to3.jpg")
+                .as("test2-3.mp4");
 
         cut.of(
                 List.of(builder1, builder2, builder3)

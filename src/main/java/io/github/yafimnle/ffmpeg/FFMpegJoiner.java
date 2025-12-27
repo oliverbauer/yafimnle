@@ -26,7 +26,7 @@ public class FFMpegJoiner {
         }
         // ffmpeg -f concat -i mylist.txt -c copy output.mp4
 
-        String filename = destinationDir + "/" + outputscript + "-files-" + apprev + ".txt";
+        String filename = destinationDir + File.separator + outputscript + "-files-" + apprev + ".txt";
         try {
             new File(filename).createNewFile();
         } catch (IOException e) {
@@ -35,12 +35,12 @@ public class FFMpegJoiner {
         FileUtils.writeStringBuilderToFile(stringBuilder, filename);
 
         String command = Config.instance().ffmpeg().command();
-        if (new File(destinationDir+"/"+outputscript+"-"+apprev+"-full.mp4").exists()) {
+        if (new File(destinationDir + File.separator + outputscript+"-"+apprev+"-full.mp4").exists()) {
             log.warn("Output {} exists, skipping", destinationDir + "/" + outputscript + "-" + apprev + "-full.mp4");
         } else {
             CLI.exec(command + " -n -f concat -safe 0 -i " + filename + " -c:v copy -c:a libmp3lame " + destinationDir + "/" + outputscript + "-" + apprev + "-full.mp4", this);
         }
 
-        return new File(destinationDir + "/" + outputscript + "-" + apprev + "-full.mp4");
+        return new File(destinationDir + File.separator + outputscript + "-" + apprev + "-full.mp4");
     }
 }
