@@ -9,6 +9,7 @@ import io.github.yafimnle.ffmpeg.filtercomplex.filter.FilterChainEntry;
 import io.github.yafimnle.utils.CLI;
 import io.github.yafimnle.utils.FileUtils;
 import io.github.yafimnle.utils.Logs;
+import lombok.EqualsAndHashCode;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
+@EqualsAndHashCode(callSuper = false)
 public class VideoBuilder extends Builder {
     String from;
     String to;

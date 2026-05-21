@@ -42,11 +42,11 @@ public class FFMpegScriptVideo extends FFMpegScript {
                 var offset = vidEndList.get(i) - fadeLength;
 
                 if (i == 0) {
-                    stringBuilder().append("  [0:v][1:v]xfade=transition=" + fadeType + ":duration=" + fadeLength + ":offset=" + offset + "[vfade1];\\").append("\n");
+                    sb().append("  [0:v][1:v]xfade=transition=" + fadeType + ":duration=" + fadeLength + ":offset=" + offset + "[vfade1];\\").append("\n");
                 } else if (i == (builders.size() - 2)) {
-                   stringBuilder().append("  [vfade" + (builders.size() - 2) + "][" + (builders.size() - 1) + ":v]xfade=transition=" + fadeType + ":duration=" + fadeLength + ":offset=" + offset + "[v]\"\\").append("\n");
+                   sb().append("  [vfade" + (builders.size() - 2) + "][" + (builders.size() - 1) + ":v]xfade=transition=" + fadeType + ":duration=" + fadeLength + ":offset=" + offset + "[v]\"\\").append("\n");
                 } else {
-                   stringBuilder().append("  [vfade" + i + "][" + (i + 1) + ":v]xfade=transition=" + fadeType + ":duration=" + fadeLength + ":offset=" + offset + "[vfade" + (i + 1) + "];\\").append("\n");
+                   sb().append("  [vfade" + i + "][" + (i + 1) + ":v]xfade=transition=" + fadeType + ":duration=" + fadeLength + ":offset=" + offset + "[vfade" + (i + 1) + "];\\").append("\n");
                 }
             }
         }

@@ -9,13 +9,13 @@ import java.io.File;
 public class Extend implements ImageFilter {
     @Override
     public File process(File input, String destinationDir) {
-        String name = input.getName();
-        String suffix = name.substring(name.length()-3);
+        var name = input.getName();
+        var suffix = name.substring(name.length()-3);
 
-        String newName = destinationDir+"/"+name+"-extend."+suffix;
+        var newName = destinationDir+"/"+name+"-extend."+suffix;
 
-        String i = FileUtils.escapeWhitespaces(input);
-        String o = FileUtils.escapeWhitespaces(new File(newName));
+        var i = FileUtils.escapeWhitespaces(input);
+        var o = FileUtils.escapeWhitespaces(new File(newName));
 
         var magick = Config.instance().magick().command();
         var dim = Config.instance().resolution().dimension();

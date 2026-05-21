@@ -19,7 +19,6 @@ import java.io.File;
 
 import static io.github.yafimnle.TestConstants.useHardwareAcceleration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ImageBuilderTest {
     @BeforeEach

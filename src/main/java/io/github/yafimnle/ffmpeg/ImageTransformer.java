@@ -23,7 +23,7 @@ public class ImageTransformer {
             preset = "-preset " + Config.instance().ffmpeg().preset();
         }
 
-        StringBuilder sb = new StringBuilder()
+        var sb = new StringBuilder()
                 .append(Config.instance().ffmpeg().command())
                 .append(" ").append(loggingConfig).append(" ").append(configThreads)
                 .append(formatOutput).append("-loop 1 -framerate ").append(framerate).append(" -t ").append(seconds).append(" -i ").append(FileUtils.escapeWhitespaces(i))

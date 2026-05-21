@@ -21,20 +21,19 @@ public class VidStab implements VideoFilter {
 
     @Override
     public File process(File input, String destinationDir) {
-        String newName = destinationDir + File.separator + input.getParent() + File.separator + input.getName() + "-stabilized.mp4";
-        String transformtrf = destinationDir + File.separator + input.getParent() + File.separator + input.getName() + "-transforms.trf";
+        var newName = destinationDir + File.separator + input.getParent() + File.separator + input.getName() + "-stabilized.mp4";
+        var transformtrf = destinationDir + File.separator + input.getParent() + File.separator + input.getName() + "-transforms.trf";
 
         if (!new File(destinationDir+File.separator+input.getParent()).exists()) {
             new File(destinationDir+File.separator+input.getParent()).mkdirs();
         }
 
-        String i = FileUtils.escapeWhitespaces(input);
-        String o = FileUtils.escapeWhitespaces(new File(newName));
-        String t = FileUtils.escapeWhitespaces(new File(transformtrf));
+        var i = FileUtils.escapeWhitespaces(input);
+        var o = FileUtils.escapeWhitespaces(new File(newName));
+        var t = FileUtils.escapeWhitespaces(new File(transformtrf));
 
-
-        String command = Config.instance().ffmpeg().command();
-        String threads = Config.instance().ffmpeg().threads();
+        var command = Config.instance().ffmpeg().command();
+        var threads = Config.instance().ffmpeg().threads();
 
         // first pass: vidstabdetect
         CLI.exec(command+" "+threads+" -i "+i+" -vf vidstabdetect=result="+t+" -f null -", this);

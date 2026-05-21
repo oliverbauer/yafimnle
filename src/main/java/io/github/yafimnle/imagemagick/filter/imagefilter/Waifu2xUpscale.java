@@ -11,10 +11,10 @@ import java.io.File;
 public class Waifu2xUpscale implements ImageFilter {
     @Override
     public File process(File input, String destinationDir) {
-        String newName = destinationDir + "/" + input.getParent() + "/" + input.getName() + "-waifu2x-upscale.jpg";
+        var newName = destinationDir + "/" + input.getParent() + "/" + input.getName() + "-waifu2x-upscale.jpg";
 
-        String i = FileUtils.escapeWhitespaces(input);
-        String o = FileUtils.escapeWhitespaces(new File(newName));
+        var i = FileUtils.escapeWhitespaces(input);
+        var o = FileUtils.escapeWhitespaces(new File(newName));
 
         CLI.exec("/home/oliver/Downloads/waifu2x-ncnn-vulkan-20250915-linux/waifu2x-ncnn-vulkan -i "+i+" -o "+o+" -n 3 -s 2", this);
 

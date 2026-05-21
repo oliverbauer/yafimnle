@@ -11,6 +11,7 @@ import io.github.yafimnle.imagemagick.filter.ImageFilters;
 import io.github.yafimnle.imagemagick.filter.imagefilter.ImageFilter;
 import io.github.yafimnle.utils.CLI;
 import io.github.yafimnle.utils.Logs;
+import lombok.EqualsAndHashCode;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
+@EqualsAndHashCode(callSuper = false)
 public class ImageBuilder extends Builder {
     int seconds = -1;
     AbstractAROptions arOptions = Config.instance().magick().defaultImageAspectRatio();
@@ -52,7 +54,7 @@ public class ImageBuilder extends Builder {
 
             targetFilename = encodingResult().getName();
         }
-        File intermediateImage = new File(destinationDir + File.separator + originalInputFile().getParent() + File.separator + targetFilename + ".jpg");
+        var intermediateImage = new File(destinationDir + File.separator + originalInputFile().getParent() + File.separator + targetFilename + ".jpg");
         encodingResult(new File(destinationDir + File.separator + originalInputFile().getParent() + File.separator + targetFilename + ".mp4"));
 
 

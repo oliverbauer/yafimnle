@@ -18,14 +18,14 @@ public class FilterComplex {
     }
 
     public static FilterComplex of(boolean isVideo, List<FilterChainEntry> filterChainEntry) {
-        FilterComplex filterComplex = new FilterComplex();
+        var filterComplex = new FilterComplex();
         filterComplex.isVideo = isVideo;
         filterComplex.outlineEntries.addAll(filterChainEntry);
         return filterComplex;
     }
 
     public static FilterComplex of(boolean isVideo, FilterChainEntry... filterChainEntry) {
-        FilterComplex filterComplex = new FilterComplex();
+        var filterComplex = new FilterComplex();
         filterComplex.isVideo = isVideo;
         filterComplex.outlineEntries.addAll(Arrays.asList(filterChainEntry));
         return filterComplex;
@@ -38,56 +38,56 @@ public class FilterComplex {
         }
 
         if (outlineEntries.size() == 1) {
-            StringBuilder s = new StringBuilder();
-            s.append("  [0:v]").append(outlineEntries.getFirst().getEntry()).append("[v];");
-            s.append("  ["+audioIndex+":a]loudnorm,afade=type=in:duration=1:start_time=0[a]"); // TODO normize?
+            var sb = new StringBuilder();
+            sb.append("  [0:v]").append(outlineEntries.getFirst().getEntry()).append("[v];");
+            sb.append("  ["+audioIndex+":a]loudnorm,afade=type=in:duration=1:start_time=0[a]"); // TODO normize?
 
-            return s.toString();
+            return sb.toString();
         } else {
-            StringBuilder s = new StringBuilder();
+            var sb = new StringBuilder();
 
-            s.append("  [0:v]\\");
-            s.append("\n");
-            s.append("  ");
-            s.append(outlineEntries.getFirst().getEntry());
-            s.append("\\");
-            s.append("\n");
-            s.append("  [v1];\\");
-            s.append("\n");
-            s.append("  [v1]split=2[v1a][v1b];");
-            s.append("\n");
+            sb.append("  [0:v]\\");
+            sb.append("\n");
+            sb.append("  ");
+            sb.append(outlineEntries.getFirst().getEntry());
+            sb.append("\\");
+            sb.append("\n");
+            sb.append("  [v1];\\");
+            sb.append("\n");
+            sb.append("  [v1]split=2[v1a][v1b];");
+            sb.append("\n");
             for (int i=1; i<=outlineEntries.size()-1; i++) {
-                s.append("  [v"+ i+"a]\\");
-                s.append("\n");
+                sb.append("  [v"+ i+"a]\\");
+                sb.append("\n");
 
-                s.append("  ");
-                s.append(outlineEntries.get(i).getEntry()).append("\\");
+                sb.append("  ");
+                sb.append(outlineEntries.get(i).getEntry()).append("\\");
 
                 if (i!=outlineEntries.size()-1) {
-                    s.append("\n");
-                    s.append("  [v" + (i) + "aDone];\\");
-                    s.append("\n");
+                    sb.append("\n");
+                    sb.append("  [v" + (i) + "aDone];\\");
+                    sb.append("\n");
 
 
-                    s.append("  [v"+ + (i)+"b][v"+ i+"aDone]overlay=0:0[v"+(i+1)+"];");
-                    s.append("\\");
-                    s.append("\n");
-                    s.append("  [v"+(i+1)+"]split=2[v"+(i+1)+"a][v"+(i+1)+"b];");
-                    s.append("\n");
+                    sb.append("  [v"+ + (i)+"b][v"+ i+"aDone]overlay=0:0[v"+(i+1)+"];");
+                    sb.append("\\");
+                    sb.append("\n");
+                    sb.append("  [v"+(i+1)+"]split=2[v"+(i+1)+"a][v"+(i+1)+"b];");
+                    sb.append("\n");
 
                 } else if (i == outlineEntries.size() -1) {
-                    s.append("\n");
-                    s.append("  [v" + (i) + "aDone];\\");
-                    s.append("\n");
-                    s.append("  [v"+i+"b][v"+i+"aDone]overlay=0:0");
+                    sb.append("\n");
+                    sb.append("  [v" + (i) + "aDone];\\");
+                    sb.append("\n");
+                    sb.append("  [v"+i+"b][v"+i+"aDone]overlay=0:0");
                 }
             }
 
-            s.append("\n");
-            s.append("[v];");
-            s.append("["+audioIndex+":a]loudnorm,afade=type=in:duration=1:start_time=0[a]"); // TODO normalize?
-            s.append("\n");
-            return s.toString();
+            sb.append("\n");
+            sb.append("[v];");
+            sb.append("["+audioIndex+":a]loudnorm,afade=type=in:duration=1:start_time=0[a]"); // TODO normalize?
+            sb.append("\n");
+            return sb.toString();
         }
     }
 }

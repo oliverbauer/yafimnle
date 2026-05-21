@@ -9,14 +9,14 @@ import java.io.File;
 public class Monocrome implements ImageFilter {
     @Override
     public File process(File input, String destinationDir) {
-        String path = input.getParent();
-        String name = input.getName();
-        String suffix = name.substring(name.length()-3);
+        var path = input.getParent();
+        var name = input.getName();
+        var suffix = name.substring(name.length()-3);
 
-        String newName = path+"/"+name+"-intermediate-partialblur."+suffix;
+        var newName = path+"/"+name+"-intermediate-partialblur."+suffix;
 
-        String i = FileUtils.escapeWhitespaces(input);
-        String o = FileUtils.escapeWhitespaces(new File(newName));
+        var i = FileUtils.escapeWhitespaces(input);
+        var o = FileUtils.escapeWhitespaces(new File(newName));
 
         CLI.exec(Config.instance().magick().command()+" "+i+" -monochrome "+o, this);
 

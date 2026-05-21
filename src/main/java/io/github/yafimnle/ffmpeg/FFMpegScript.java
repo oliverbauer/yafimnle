@@ -9,18 +9,18 @@ import java.util.List;
 
 public abstract class FFMpegScript {
     @Getter
-    private final StringBuilder stringBuilder;
+    private final StringBuilder sb;
     protected final Config config;
     @Getter
     private int fullLength;
 
     protected FFMpegScript() {
-        this.stringBuilder = new StringBuilder();
+        this.sb = new StringBuilder();
         this.config = Config.instance();
 
-        stringBuilder.append("#!/bin/bash").append("\n").append("\n");
-        stringBuilder.append("start=$(date)").append("\n");
-        stringBuilder.append(Config.instance().ffmpeg().command())
+        sb.append("#!/bin/bash").append("\n").append("\n");
+        sb.append("start=$(date)").append("\n");
+        sb.append(Config.instance().ffmpeg().command())
                 .append(" ")
                 .append(config.ffmpeg().threads())
                 .append(" ")
@@ -44,7 +44,7 @@ public abstract class FFMpegScript {
                 fullLength = fullLength + (length - fadeLength);
             }
 
-            stringBuilder.append(" -i ")
+            sb.append(" -i ")
                     .append(FileUtils.escapeWhitespaces(builder.encodingResult()))
                     // the following part is only a comment which is not necessary
                     .append(" `# [")

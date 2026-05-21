@@ -2,7 +2,6 @@ package io.github.yafimnle.ffmpeg.filter;
 
 import io.github.yafimnle.api.TestResource;
 import io.github.yafimnle.config.Config;
-import io.github.yafimnle.ffmpeg.filter.VidStab;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,7 @@ class VidStabTest {
         // given
         //File input = new File(source);
 
-        var actual = new VidStab().process(i, "/tmp");
+        new VidStab().process(i, "/tmp");
 
     }
 }

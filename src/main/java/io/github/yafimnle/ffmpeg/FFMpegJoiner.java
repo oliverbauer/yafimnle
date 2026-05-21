@@ -1,6 +1,7 @@
 package io.github.yafimnle.ffmpeg;
 
 import io.github.yafimnle.config.Config;
+import io.github.yafimnle.exception.IllegalArgsException;
 import io.github.yafimnle.utils.CLI;
 import io.github.yafimnle.utils.FileUtils;
 import lombok.extern.log4j.Log4j2;
@@ -17,24 +18,24 @@ public class FFMpegJoiner {
     }
 
     public File join(String outputscript, List<File> files) {
-        String destinationDir = Config.instance().destinationDir();
-        String apprev = Config.instance().resolution().apprev();
+        var destinationDir = Config.instance().destinationDir();
+        var apprev = Config.instance().resolution().apprev();
 
-        StringBuilder stringBuilder = new StringBuilder();
+        var sb = new StringBuilder();
         for (File file : files) {
-            stringBuilder.append("file '").append(file.getAbsolutePath()).append("'\n");
+            sb.append("file '").append(file.getAbsolutePath()).append("'\n");
         }
         // ffmpeg -f concat -i mylist.txt -c copy output.mp4
 
-        String filename = destinationDir + File.separator + outputscript + "-files-" + apprev + ".txt";
+        var filename = destinationDir + File.separator + outputscript + "-files-" + apprev + ".txt";
         try {
             new File(filename).createNewFile();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgsException(e);
         }
-        FileUtils.writeStringBuilderToFile(stringBuilder, filename);
+        FileUtils.writeStringBuilderToFile(sb, filename);
 
-        String command = Config.instance().ffmpeg().command();
+        var command = Config.instance().ffmpeg().command();
         if (new File(destinationDir + File.separator + outputscript+"-"+apprev+"-full.mp4").exists()) {
             log.warn("Output {} exists, skipping", destinationDir + "/" + outputscript + "-" + apprev + "-full.mp4");
         } else {

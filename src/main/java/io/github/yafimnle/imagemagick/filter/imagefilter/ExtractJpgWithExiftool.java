@@ -8,7 +8,7 @@ import java.io.File;
 public class ExtractJpgWithExiftool implements ImageFilter {
     @Override
     public File process(File input, String destinationDir) {
-        File output = new File(input.getAbsolutePath()+"-jpg.jpg");
+        var output = new File(input.getAbsolutePath()+"-jpg.jpg");
         CLI.exec("exiftool -b -JpgFromRaw "+ FileUtils.escapeWhitespaces(input)+" > "+FileUtils.escapeWhitespaces(output), this);
         return output;
     }

@@ -121,13 +121,9 @@ public class YaFIMnle {
      * @return
      */
     public File createJoin() {
-        List<File> files = new ArrayList<>();
-        for (Builder builder : builders) {
-            File file = builder.create();
-            files.add(file);
-        }
+        var files = builders.stream().map(Builder::create).toList();
 
-        FFMpegJoiner joiner = new FFMpegJoiner();
+        var joiner = new FFMpegJoiner();
         return joiner.join(videoname, files);
     }
 
@@ -146,7 +142,7 @@ public class YaFIMnle {
             return new File(finalResult);
         }
 
-        String codec = Config.instance().ffmpeg().codec();
+        var codec = Config.instance().ffmpeg().codec();
 
         if (log.isInfoEnabled()) {
             var pictures = builders
@@ -177,14 +173,14 @@ public class YaFIMnle {
         invokeBuilder(); // creates intermediate files
 
         // AUDIO
-        var audioonlyStringBuilder = ffMpegScriptAudio.stringBuilder();
+        var audioonlyStringBuilder = ffMpegScriptAudio.sb();
         ffMpegScriptAudio.appendInputs(builders);
         ffMpegScriptAudio.fade(builders);
         FileUtils.writeStringBuilderToFile(audioonlyStringBuilder, destinationDir + "/" + videoname + "-audioonly.sh");
         // AUDIO END
 
         // VIDEO
-        var videoonlyStringBuilder = ffMpegScriptVideo.stringBuilder();
+        var videoonlyStringBuilder = ffMpegScriptVideo.sb();
         ffMpegScriptVideo.appendInputs(builders);
         var ende = ffMpegScriptVideo.fullLength();
         videoonlyStringBuilder.append("  -filter_complex \"\\").append("\n");
@@ -232,7 +228,7 @@ public class YaFIMnle {
         }
 
         String audioInput;
-        String ffmpeg = Config.instance().ffmpeg().command();
+        var ffmpeg = Config.instance().ffmpeg().command();
         if (overlayMp3 != null) {
             var name = FileUtils.escapeWhitespaces(overlayMp3);
 
