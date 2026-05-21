@@ -14,7 +14,7 @@ import java.util.List;
 import static io.github.yafimnle.TestConstants.useHardwareAcceleration;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class CropEqualTest {
+class CropTest {
     private static final String DESTINATION_DIR = "/tmp/";
 
     @BeforeEach

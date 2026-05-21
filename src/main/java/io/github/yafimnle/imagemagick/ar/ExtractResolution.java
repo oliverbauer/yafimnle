@@ -41,10 +41,10 @@ public class ExtractResolution implements AbstractAROptions {
         int dimHeight = dimension.height();
 
         if (y + height > dimHeight) {
-            throw new IllegalArgsException("Imageheight is "+dimHeight+" and target dimension dimHeight "+height+". You requested starting from "+y+". Max allowed: "+dimHeight+"-"+height+"="+(dimHeight-height));
+            throw new IllegalArgsException("Image height is "+dimHeight+" and target dimension dimHeight "+height+". You requested starting from "+y+". Max allowed: "+dimHeight+"-"+height+"="+(dimHeight-height));
         }
         if (x + width > dimWidth) {
-            throw new IllegalArgsException("Imagewidth is "+dimWidth+" and target dimension dimWidth "+width+". You requested starting from "+x+". Max allowed: "+dimWidth+"-"+width+"="+(dimWidth-width));
+            throw new IllegalArgsException("Image width is "+dimWidth+" and target dimension dimWidth "+width+". You requested starting from "+x+". Max allowed: "+dimWidth+"-"+width+"="+(dimWidth-width));
         }
 
         return Config.instance().magick().command()+" -extract " + width + "x" + height + "+"+x+"+"+y+" " + FileUtils.escapeWhitespaces(i) + " " + FileUtils.escapeWhitespaces(o);
